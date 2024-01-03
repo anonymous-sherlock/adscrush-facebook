@@ -10,7 +10,8 @@
     "push": "pnpm prisma db push",
     "pull": "pnpm prisma db pull",
     "generate": "pnpm prisma generate",
-    "clean": "rm -rf node_modules && rm -rf .next"
+    "clean": "rm -rf node_modules && rm -rf .next",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
