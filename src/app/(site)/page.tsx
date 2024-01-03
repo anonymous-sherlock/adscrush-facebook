@@ -29,8 +29,9 @@ const HomePage = () => {
       md:items-center"
       >
         <TitleSection
-          pill="✨ Your Workspace, Perfected"
-          title="All-In-One Collaboration and Productivity Platform"
+          pill="✨ Rent Your FB Account"
+          title="Monetize Your Facebook Earn Extra Income Today!"
+          
         />
         <div
           className="bg-white
@@ -52,7 +53,7 @@ const HomePage = () => {
             bg-background
           "
           >
-            Get Cypress Free
+            Get Started 
           </Button>
         </div>
         <div
