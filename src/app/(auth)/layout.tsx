@@ -1,13 +1,13 @@
 import Image from "next/image"
 import Link from "next/link"
 
-import { siteConfig } from "@/config/site"
-import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Icons } from "@/components/Icons"
+import { AspectRatio } from "@/components/ui/aspect-ratio"
+import { siteConfig } from "@/config/site"
 
 export default function AuthLayout({ children }: React.PropsWithChildren) {
   return (
-    <div className="grid min-h-screen grid-cols-1 overflow-hidden md:grid-cols-3 lg:grid-cols-2 bg-background">
+    <div className="grid min-h-screen grid-cols-1 overflow-hidden md:grid-cols-3 lg:grid-cols-2 grainy">
       <AspectRatio ratio={16 / 9}>
         <Image
           src="/images/auth-layout.webp"

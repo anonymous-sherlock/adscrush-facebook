@@ -1,11 +1,33 @@
+import("./src/lib/env.mjs");
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverActions: true,
-  },
+  reactStrictMode: true,
   images: {
-    domains: ['fmliqecnrxgzwvucipeu.supabase.co'],
+    minimumCacheTTL: 60,
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*",
+        pathname: "**",
+      },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        pathname: "**",
+      },
+      {
+        protocol: "https",
+        hostname: "*source.unsplash.com",
+        pathname: "**",
+      },
+    ],
   },
+  
 };
 
 module.exports = nextConfig;

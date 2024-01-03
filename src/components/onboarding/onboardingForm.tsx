@@ -2,7 +2,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-import { trpc } from "@/app/_trpc/client";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -14,7 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { FBOnboardingSchema } from "@/schema/onboarding.schema";
 import { useRouter } from "next/navigation";
@@ -58,7 +57,8 @@ export function OnboardingForm({ }: OnboardingFormProps) {
   }
 
   return (
-    <Card className="p-6 w-full max-w-3xl bg-white">
+
+    <Card className="p-6 w-full max-w-3xl bg-white mx-auto">
       <CardContent className="mt-2 w-full p-0">
         <Form {...form}>
           <form
@@ -68,7 +68,7 @@ export function OnboardingForm({ }: OnboardingFormProps) {
           >
             <div className="flex w-full flex-col gap-6">
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col md:grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
                   name="name"
@@ -225,5 +225,6 @@ export function OnboardingForm({ }: OnboardingFormProps) {
         </Form>
       </CardContent>
     </Card>
+
   );
 }

@@ -1,7 +1,10 @@
+import { env } from "@/env.mjs"
 import { type Metadata } from "next"
 import Link from "next/link"
-import { env } from "@/env.mjs"
 
+import { OAuthSignIn } from "@/components/auth/oauth-signin"
+import { SignInForm } from "@/components/auth/signin-form"
+import { Shell } from "@/components/shell"
 import {
   Card,
   CardContent,
@@ -10,9 +13,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { OAuthSignIn } from "@/components/auth/oauth-signin"
-import { SignInForm } from "@/components/auth/signin-form"
-import { Shell } from "@/components/shell"
 import { authPages } from "@routes"
 
 export const metadata: Metadata = {
@@ -23,8 +23,8 @@ export const metadata: Metadata = {
 
 export default function SignInPage() {
   return (
-    <Shell className="max-w-lg">
-      <Card>
+    <Shell className="p-0 md:container w-full md:max-w-lg">
+      <Card className="w-full">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl">Sign in</CardTitle>
           <CardDescription className="text-foreground">
