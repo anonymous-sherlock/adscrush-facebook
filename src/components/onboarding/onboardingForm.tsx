@@ -9,29 +9,22 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-  UncontrolledFormMessage
-
+  FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Zoom } from "@/components/zoom-image";
 import { cn } from "@/lib/utils";
 import { FBOnboardingSchema } from "@/schema/onboarding.schema";
+import { FileWithPreview } from "@/types";
 import { useRouter } from "next/navigation";
+import React from "react";
 import { useForm } from "react-hook-form";
-import { FileDialog } from "../file-dialog";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
 import { Separator } from "../ui/separator";
-import { DobPickerForm } from "./Dob";
-import IdDropdown from "./IdDropdown";
-import Image from "next/image";
-import React from "react";
-import { FileWithPreview } from "@/types";
 import { AadharUploader } from "./AadharUploader";
-import AlternateId from "./AlternateId";
 import { AlternateIdUploader } from "./AlternateIdUploader";
+import { DobPickerForm } from "./Dob";
 
 
 type OnboardingFormProps = {
