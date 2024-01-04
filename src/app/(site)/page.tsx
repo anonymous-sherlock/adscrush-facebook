@@ -13,6 +13,8 @@ import clsx from 'clsx';
 import CustomCard from '@/components/landing-page/custom-card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { CardContent, CardDescription, CardTitle } from '@/components/ui/card';
+import Link from 'next/link';
+import { authPages } from '@routes';
 
 const HomePage = () => {
   return (
@@ -31,7 +33,7 @@ const HomePage = () => {
         <TitleSection
           pill="✨ Rent Your FB Account"
           title="Monetize Your Facebook Earn Extra Income Today!"
-          
+
         />
         <div
           className="bg-white
@@ -46,14 +48,17 @@ const HomePage = () => {
         >
           <Button
             variant="btn-secondary"
-            className=" w-full
+            className="w-full relative
             rounded-[10px]
             p-6
             text-2xl
             bg-background
+            z-[9999]
           "
           >
-            Get Started 
+            <Link href={authPages.register}>
+              Get Started
+            </Link>
           </Button>
         </div>
         <div
@@ -168,9 +173,9 @@ const HomePage = () => {
         "
         />
         <TitleSection
-          title="Keep track of your meetings all in one place"
-          subheading="Capture your ideas, thoughts, and meeting notes in a structured and organized manner."
-          pill="Features"
+          title="Earn Daily by Renting Your Facebook Account"
+          subheading="Discover the opportunity to generate daily income by leasing your Facebook account."
+          pill="Earn Money"
         />
         <div
           className="mt-10
@@ -275,6 +280,8 @@ const HomePage = () => {
           ))}
         </div>
       </section>
+
+
       <section
         className="mt-20
         px-4
@@ -297,7 +304,7 @@ const HomePage = () => {
         mt-10
         "
         >
-          {PRICING_CARDS.map((card) => (
+          {/* {PRICING_CARDS.map((card) => (
             <CustomCard
               key={card.planType}
               className={clsx(
@@ -390,7 +397,7 @@ const HomePage = () => {
                 </ul>
               }
             />
-          ))}
+          ))} */}
         </div>
       </section>
     </>

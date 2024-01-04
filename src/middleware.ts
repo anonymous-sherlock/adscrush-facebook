@@ -1,5 +1,5 @@
 import { env } from "@/env.mjs";
-import { DEFAULT_LOGIN_REDIRECT, ONBOARDING_REDIRECT, apiAuthPrefix, authRoutes, publicRoutes } from "@routes";
+import { DEFAULT_LOGIN_REDIRECT, ONBOARDING_REDIRECT, apiAuthPrefix, apiPrefix, authRoutes, publicRoutes } from "@routes";
 import { withAuth } from "next-auth/middleware";
 
 export default withAuth(
@@ -10,10 +10,13 @@ export default withAuth(
 
     const isOnboarded = req.nextauth.token?.isOnboarded
 
+    const isApiRoute = nextUrl.pathname.startsWith(apiPrefix);
     const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
+
+    console.log("logged in : ", isLoggedIn)
     if (isApiAuthRoute) {
       return null;
     }
@@ -26,8 +29,7 @@ export default withAuth(
     }
 
     if (!isOnboarded && !nextUrl.pathname.startsWith(ONBOARDING_REDIRECT)) {
-      if (!isPublicRoute && !isApiAuthRoute && !isAuthRoute) {
-        console.log("isOnboarded", isOnboarded)
+      if (!isPublicRoute && !isApiAuthRoute && !isAuthRoute && !isApiRoute) {
         return Response.redirect(new URL(ONBOARDING_REDIRECT, nextUrl));
       }
     }

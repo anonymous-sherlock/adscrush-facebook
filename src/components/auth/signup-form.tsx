@@ -20,12 +20,25 @@ import {
 import { Input } from "@/components/ui/input"
 import { Icons } from "@/components/Icons"
 import { PasswordInput } from "@/components/auth/password-input"
+import { trpc } from "@/app/_trpc/client"
 
 type Inputs = z.infer<typeof authSchema>
 
 export function SignUpForm() {
   const router = useRouter()
-  const [isPending, startTransition] = React.useTransition()
+
+  const { mutateAsync: addUser, isLoading, data } = trpc.user.add.useMutation({
+    onSuccess(data) {
+      if (data.success)
+        toast.success(data.message);
+      router.push("/login");
+    },
+    onError(error) {
+      toast.error(error.message)
+    },
+
+
+  })
 
   // react-hook-form
   const form = useForm<Inputs>({
@@ -37,7 +50,7 @@ export function SignUpForm() {
   })
 
   function onSubmit(data: Inputs) {
-    console.log(data)
+    addUser(data)
   }
 
   return (
@@ -72,8 +85,8 @@ export function SignUpForm() {
             </FormItem>
           )}
         />
-        <Button disabled={isPending}>
-          {isPending && (
+        <Button disabled={isLoading}>
+          {isLoading && (
             <Icons.spinner
               className="mr-2 h-4 w-4 animate-spin"
               aria-hidden="true"

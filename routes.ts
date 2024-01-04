@@ -15,7 +15,8 @@ export const authRoutes = [
   "/sign-up",
   "/auth/error",
   "/sign-in/reset-password",
-  "/sign-in/reset-password/step-2"
+  "/sign-in/reset-password/step-2",
+  "/api/trpc/user.add"
 ];
 
 export const authPages = {
@@ -36,6 +37,13 @@ export const ONBOARDING_REDIRECT = "/onboarding"
  * @type {string}
  */
 export const apiAuthPrefix = "/api/auth";
+
+/**
+ * The prefix for API  routes
+ * Routes that start with this prefix are used for API to handle redirects
+ * @type {string}
+ */
+export const apiPrefix = "/api";
 
 /**
  * The default redirect path after logging in

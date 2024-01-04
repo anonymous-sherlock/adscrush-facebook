@@ -25,6 +25,21 @@ model User {
   accounts              Account[]
   isTwoFactorEnabled    Boolean                @default(false)
   twoFactorConfirmation TwoFactorConfirmation?
+  Document              Document[]
+}
+
+model Document {
+  id           String   @id @default(cuid())
+  name         String
+  url          String
+  key          String
+  documentType String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  userId       String?
+  User         User?    @relation(fields: [userId], references: [id])
+
+  @@unique([userId, documentType, key])
 }
 
 model Account {

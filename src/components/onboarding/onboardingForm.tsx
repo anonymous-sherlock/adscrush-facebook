@@ -9,19 +9,29 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
+  UncontrolledFormMessage
+
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
 import { Card, CardContent } from "@/components/ui/card";
+import { Zoom } from "@/components/zoom-image";
 import { cn } from "@/lib/utils";
 import { FBOnboardingSchema } from "@/schema/onboarding.schema";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { FileDialog } from "../file-dialog";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
 import { Separator } from "../ui/separator";
 import { DobPickerForm } from "./Dob";
+import IdDropdown from "./IdDropdown";
+import Image from "next/image";
+import React from "react";
+import { FileWithPreview } from "@/types";
+import { AadharUploader } from "./AadharUploader";
+import AlternateId from "./AlternateId";
+import { AlternateIdUploader } from "./AlternateIdUploader";
 
 
 type OnboardingFormProps = {
@@ -31,7 +41,7 @@ type OnboardingFormProps = {
 
 export function OnboardingForm({ }: OnboardingFormProps) {
 
-  const [open, setOpen] = useState(false);
+  const [files, setFiles] = React.useState<FileWithPreview[] | null>(null)
 
   const router = useRouter()
 
@@ -43,11 +53,11 @@ export function OnboardingForm({ }: OnboardingFormProps) {
       name: "",
       email: "",
       phone: "",
-      aadharCard: "",
       alternativeID: "",
       fbPassword: "",
       fbProfileLink: "",
       fbUsername: "",
+      alternativeIDFile: []
     },
   });
 
@@ -88,7 +98,7 @@ export function OnboardingForm({ }: OnboardingFormProps) {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel className="text-card-foreground">Email</FormLabel>
                       <FormControl>
                         <Input placeholder="abc@examle.com" {...field} />
                       </FormControl>
@@ -102,7 +112,7 @@ export function OnboardingForm({ }: OnboardingFormProps) {
                   name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Phone Number</FormLabel>
+                      <FormLabel className="text-card-foreground">Phone Number</FormLabel>
                       <FormControl>
                         <Input placeholder="7895687458" {...field} />
                       </FormControl>
@@ -113,7 +123,7 @@ export function OnboardingForm({ }: OnboardingFormProps) {
 
                 <div className="flex flex-1 justify-center items-center gap-2">
                   <FormItem className="w-full">
-                    <FormLabel>Verfication code</FormLabel>
+                    <FormLabel className="text-card-foreground">Verfication code</FormLabel>
                     <FormControl>
                       <Input placeholder="789586" />
                     </FormControl>
@@ -131,7 +141,7 @@ export function OnboardingForm({ }: OnboardingFormProps) {
                   name="fbUsername"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Facebook Username</FormLabel>
+                      <FormLabel className="text-card-foreground">Facebook Username</FormLabel>
                       <FormControl>
                         <Input placeholder="andi45" {...field} />
                       </FormControl>
@@ -144,7 +154,7 @@ export function OnboardingForm({ }: OnboardingFormProps) {
                   name="fbPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Facebook Password</FormLabel>
+                      <FormLabel className="text-card-foreground">Facebook Password</FormLabel>
                       <FormControl>
                         <Input placeholder="******" {...field} />
                       </FormControl>
@@ -153,13 +163,13 @@ export function OnboardingForm({ }: OnboardingFormProps) {
                   )}
                 />
 
-                {/* target gender */}
+                {/* gender */}
                 <FormField
                   control={form.control}
                   name="gender"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Target Gender</FormLabel>
+                      <FormLabel className="text-card-foreground">Gender</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
@@ -204,7 +214,7 @@ export function OnboardingForm({ }: OnboardingFormProps) {
                 name="fbProfileLink"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Facebook Profile Link</FormLabel>
+                    <FormLabel className="text-card-foreground">Facebook Profile Link</FormLabel>
                     <FormControl>
                       <Input placeholder="https://www.facebook.com/profile.php?id=6789518979465" {...field} />
                     </FormControl>
@@ -212,6 +222,47 @@ export function OnboardingForm({ }: OnboardingFormProps) {
                   </FormItem>
                 )}
               />
+              <AadharUploader />
+
+              <AlternateIdUploader />
+
+              {/* <FormItem className="flex w-full flex-col gap-1.5">
+                <FormLabel>Alternate ID Document</FormLabel>
+                {files?.length ? (
+                  <div className="flex items-center gap-2">
+                    {files.map((file, i) => (
+                      <Zoom key={i}>
+                        <Image
+                          src={file.preview}
+                          alt={file.name}
+                          className="h-20 w-20 shrink-0 rounded-md object-cover object-center"
+                          width={80}
+                          height={80}
+                        />
+                      </Zoom>
+                    ))}
+                  </div>
+                ) : null}
+                <FormControl>
+                  <FileDialog
+                    setValue={form.setValue}
+                    name="alternativeIDFile"
+                    maxFiles={3}
+                    maxSize={1024 * 1024 * 4}
+                    files={files}
+                    setFiles={setFiles}
+                    accept={{
+                      "application/pdf": [],
+                      "image/*": []
+                    }}
+
+                  />
+                </FormControl>
+                <UncontrolledFormMessage
+                  message={form.formState.errors.alternativeIDFile?.message}
+                />
+              </FormItem> */}
+
 
             </div>
             <Button

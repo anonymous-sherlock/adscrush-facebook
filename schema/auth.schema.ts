@@ -25,6 +25,11 @@ export const authSchema = z.object({
   password: passwordSchema,
 });
 
+export const loginSchema = z.object({
+  email: authSchema.shape.email,
+  password: z.string(),
+});
+
 export const verifyEmailSchema = z.object({
   code: z
     .string()

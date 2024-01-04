@@ -49,7 +49,7 @@ export function DobPickerForm() {
 
   useEffect(() => {
     setValue("dob", dateRef.current ?? new Date());
-    onSubmit(dateRef.current ?? new Date());
+   
   }, [dateRef, setValue]);
 
   function onYearChange(value: string) {

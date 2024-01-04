@@ -26,7 +26,7 @@ export default function RootLayout({
       <Providers >
         <body className={cn('bg-background grainy', inter.className)}>
           {children}
-          <Toaster />
+          <Toaster richColors closeButton  />
         </body>
       </Providers>
     </html>

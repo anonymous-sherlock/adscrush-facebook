@@ -23,6 +23,12 @@ export const env = createEnv({
 
     TWILIO_ACCOUNT_SID: z.string().min(1),
     TWILIO_AUTH_TOKEN: z.string().min(1),
+
+    UPLOADTHING_SECRET: z.string().min(1),
+    UPLOADTHING_APP_ID: z.string().min(1),
+
+    CDN_API_KEY: z.string().min(1),
+    CDN_UPLOAD_URL: z.string().min(1),
   },
 
   /**
@@ -57,9 +63,14 @@ export const env = createEnv({
     FACEBOOK_CLIENT_ID: process.env.FACEBOOK_CLIENT_ID,
     FACEBOOK_CLIENT_SECRET: process.env.FACEBOOK_CLIENT_SECRET,
 
-
     TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID,
     TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,
+
+    UPLOADTHING_SECRET: process.env.UPLOADTHING_SECRET,
+    UPLOADTHING_APP_ID: process.env.UPLOADTHING_APP_ID,
+
+    CDN_API_KEY: process.env.CDN_API_KEY,
+    CDN_UPLOAD_URL: process.env.CDN_UPLOAD_URL,
 
     NEXT_PUBLIC_VERCEL_URL: process.env.NEXT_PUBLIC_VERCEL_URL,
     NEXT_PUBLIC_NODE_ENV: process.env.NODE_ENV,

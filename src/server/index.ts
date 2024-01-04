@@ -2,17 +2,10 @@ import { getAuthSession } from "@/lib/auth";
 import { inferReactQueryProcedureOptions } from "@trpc/react-query";
 import { TRPCError, inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { publicProcedure, router } from "./trpc";
+import { userRouter } from "./routers/user.router";
 
 export const appRouter = router({
-  authCallback: publicProcedure.query(async ({ }) => {
-    const session = await getAuthSession();
-    if (!session) throw new TRPCError({ code: "UNAUTHORIZED" });
-    const { user } = session;
-    if (!user.id || !user.email) throw new TRPCError({ code: "UNAUTHORIZED" });
-
-    return { success: true };
-  }),
-
+  user: userRouter
 });
 
 export type AppRouter = typeof appRouter;

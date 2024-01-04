@@ -1,13 +1,14 @@
 "use client"
 
-import * as React from "react"
 import { useRouter } from "next/navigation"
+import * as React from "react"
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import type { z } from "zod"
 
-import { authSchema } from "@/schema/auth.schema"
+import { Icons } from "@/components/Icons"
+import { PasswordInput } from "@/components/auth/password-input"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -18,10 +19,12 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Icons } from "@/components/Icons"
-import { PasswordInput } from "@/components/auth/password-input"
+import { loginSchema } from "@/schema/auth.schema"
+import { signIn } from "next-auth/react"
+import { toast } from "sonner"
+import { DEFAULT_LOGIN_REDIRECT } from "@routes"
 
-type Inputs = z.infer<typeof authSchema>
+type Inputs = z.infer<typeof loginSchema>
 
 export function SignInForm() {
   const router = useRouter()
@@ -30,15 +33,38 @@ export function SignInForm() {
 
   // react-hook-form
   const form = useForm<Inputs>({
-    resolver: zodResolver(authSchema),
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   })
 
-  function onSubmit(data: Inputs) {
-   console.log(data)
+  async function onSubmit(data: Inputs) {
+    startTransition(async () => {
+      try {
+        const response = await signIn("credentials", {
+          email: data.email,
+          password: data.password,
+          redirect: false
+        })
+        if (response) {
+          // Check if response is not undefined
+          if (response.error) {
+            toast.error(response.error);
+          } else {
+            toast.message("Login Successful", {
+              description: "Redirecting to dashboard..."
+            })
+            router.push(DEFAULT_LOGIN_REDIRECT)
+          }
+        }
+
+      } catch (error) {
+        toast.error("Something went wrong");
+      }
+    })
+
   }
 
   return (
