@@ -44,41 +44,41 @@ const UploadDropZone = () => {
 
   return (
     <Dropzone multiple={true} onDrop={async (acceptedFile) => {
-      setIsUploading(true)
-      const progressInterval = startSimulatedProgress()
+      // setIsUploading(true)
+      // const progressInterval = startSimulatedProgress()
 
-      // handle file upload 
-      // const res = await startUpload(acceptedFile)
+      // // handle file upload 
+      // // const res = await startUpload(acceptedFile)
 
       // const res = await aadharUploader(acceptedFile[0])
 
-      console.log(res)
+      // console.log(res)
 
-      if (!res) {
-        return toast({
-          title: "Something went wrong",
-          description: "You can try again",
-          variant: "destructive"
+      // if (!res) {
+      //   return toast({
+      //     title: "Something went wrong",
+      //     description: "You can try again",
+      //     variant: "destructive"
 
-        })
-      }
+      //   })
+      // }
 
-      // const [fileResponse] = res
+      // // const [fileResponse] = res
 
-      const key = fileResponse?.key
-      console.log(res)
-      if (!key) {
-        return toast({
-          title: "Something went wrong",
-          description: "You can try again",
-          variant: "destructive"
+      // const key = fileResponse?.key
+      // console.log(res)
+      // if (!key) {
+      //   return toast({
+      //     title: "Something went wrong",
+      //     description: "You can try again",
+      //     variant: "destructive"
 
-        })
-      }
-      // await new Promise((resolve) => setTimeout(resolve, 10000))
+      //   })
+      // }
+      // // await new Promise((resolve) => setTimeout(resolve, 10000))
 
-      clearInterval(progressInterval)
-      setUploadProgress(100)
+      // clearInterval(progressInterval)
+      // setUploadProgress(100)
 
     }}>
       {({ getRootProps, getInputProps, acceptedFiles }) => (
