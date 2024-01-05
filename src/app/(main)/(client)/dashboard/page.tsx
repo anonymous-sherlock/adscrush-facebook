@@ -32,7 +32,7 @@ async function DashboardPage() {
     },
     select: {
       isOnboarded: true,
-      onboarding: true
+      onboardings: true
     }
   })
   if (!onboarded) {
