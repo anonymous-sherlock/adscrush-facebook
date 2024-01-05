@@ -9,7 +9,6 @@ import { Progress } from "./ui/progress";
 import { useUploadThing } from "@/lib/uploadthing";
 import { useToast } from "./ui/use-toast";
 import { useRouter } from "next/navigation";
-import { aadharUploader } from "@/lib/actions/file.uploader";
 
 const UploadDropZone = () => {
 

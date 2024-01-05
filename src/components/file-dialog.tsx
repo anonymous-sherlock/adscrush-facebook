@@ -31,7 +31,6 @@ import { cn, formatBytes } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { File as FileIcon, Trash } from "lucide-react"
-import { useAadhaarFiles } from "@/store/index"
 
 // FIXME Your proposed upload exceeds the maximum allowed size, this should trigger toast.error too
 
