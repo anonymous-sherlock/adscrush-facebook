@@ -7,6 +7,7 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { env } from "@/env.mjs";
 import Providers from "../../providers";
+import { UiProvider } from "providers/next-ui";
 
 const inter = DM_Sans({ subsets: ['latin'] });
 
@@ -22,11 +23,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
+
     <html lang="en" className="light" suppressHydrationWarning>
       <Providers >
         <body className={cn('bg-background grainy', inter.className)}>
-          {children}
-          <Toaster richColors closeButton  />
+          <UiProvider >
+            {children}
+          </UiProvider>
+          <Toaster richColors closeButton />
         </body>
       </Providers>
     </html>

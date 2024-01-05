@@ -8,40 +8,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-enum UserRole {
-  ADMIN
-  USER
-}
-
-model User {
-  id                    String                 @id @default(cuid())
-  name                  String?
-  email                 String?                @unique
-  emailVerified         DateTime?
-  image                 String?
-  password              String?
-  isOnboarded           DateTime?
-  role                  UserRole               @default(USER)
-  accounts              Account[]
-  isTwoFactorEnabled    Boolean                @default(false)
-  twoFactorConfirmation TwoFactorConfirmation?
-  Document              Document[]
-}
-
-model Document {
-  id           String   @id @default(cuid())
-  name         String
-  url          String
-  key          String
-  documentType String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  userId       String?
-  User         User?    @relation(fields: [userId], references: [id])
-
-  @@unique([userId, documentType, key])
-}
-
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -59,40 +25,140 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@map("account")
 }
 
-model VerificationToken {
-  id      String   @id @default(cuid())
-  email   String
-  token   String   @unique
-  expires DateTime
+model User {
+  id            String       @id @default(cuid())
+  name          String?
+  email         String?      @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  isOnboarded   DateTime?
+  role          UserRole     @default(USER)
+  accounts      Account[]
+  onboardings   Onboarding[]
+  documents     Document[]
+  payments      Payment[]
+  wallet        Wallet?      @relation(fields: [walletId], references: [id])
+  walletId      String?      @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+model Wallet {
+  id       String    @id @default(cuid())
+  balance  Float     @default(0)
+  user     User?
+  payments Payment[]
+
+  @@map("wallet")
+}
+
+model Payment {
+  id        String         @id @default(cuid())
+  amount    Float
+  type      Payment_Type   @default(Withdraw)
+  status    Payment_Status @default(PENDING)
+  txid      String         @unique @default(uuid())
+  User      User?          @relation(fields: [userId], references: [id])
+  userId    String?
+  wallet    Wallet         @relation(fields: [walletId], references: [id])
+  walletId  String
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+enum Payment_Type {
+  Deposit
+  Withdraw
+}
+
+enum Payment_Status {
+  PENDING
+  PAID
+  FAILED
+  CANCELLED
+}
+
+model Onboarding {
+  id                    String            @id @default(cuid())
+  name                  String
+  email                 String
+  phone                 String
+  dob                   DateTime
+  facebook_username     String
+  facebook_password     String
+  facebook_profile_link String
+  emailVerified         DateTime?
+  user                  User              @relation(fields: [userId], references: [id])
+  userId                String
+  documents             Document[]
+  status                Onboarding_Status @default(Hold)
+  documentId            String?
+  createdAt             DateTime          @default(now())
+  updatedAt             DateTime          @updatedAt
+
+  @@map("onboardings")
+}
+
+enum Onboarding_Status {
+  Verified
+  Declined
+  Hold
+}
+
+model Document {
+  id           String           @id @default(cuid())
+  name         String
+  documentType Document_ID_TYPE
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  files        Files[]
+  onboarding   Onboarding       @relation(fields: [onboardingId], references: [id])
+  onboardingId String
+  filesId      String?
+  user         User             @relation(fields: [userId], references: [id])
+  userId       String
+
+  @@map("documents")
+}
+
+model Files {
+  id               String   @id @default(uuid())
+  name             String
+  size             Int
+  type             String
+  url              String
+  originalFileName String
+  uploadPath       String?
+  createdAt        DateTime @default(now())
+
+  Document   Document? @relation(fields: [documentId], references: [id])
+  documentId String?
+
+  @@map("files")
+}
+
+enum Document_ID_TYPE {
+  PRIMARY
+  ALTERNATE
+}
+
+model OnboardingEmailVerification {
+  id         String   @id @default(cuid())
+  email      String   @unique
+  token      String
+  isVerified DateTime
+  expires    DateTime
 
   @@unique([email, token])
-}
-
-model PasswordResetToken {
-  id      String   @id @default(cuid())
-  email   String
-  token   String   @unique
-  expires DateTime
-
-  @@unique([email, token])
-}
-
-model TwoFactorToken {
-  id      String   @id @default(cuid())
-  email   String
-  token   String   @unique
-  expires DateTime
-
-  @@unique([email, token])
-}
-
-model TwoFactorConfirmation {
-  id String @id @default(cuid())
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([userId])
+  @@map("onboarding_email_verification")
 }

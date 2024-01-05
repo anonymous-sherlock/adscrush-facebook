@@ -27,8 +27,15 @@ export const env = createEnv({
     UPLOADTHING_SECRET: z.string().min(1),
     UPLOADTHING_APP_ID: z.string().min(1),
 
+    GITHUB_ID: z.string().min(1),
+    GITHUB_SECRET: z.string().min(1),
+
     CDN_API_KEY: z.string().min(1),
     CDN_UPLOAD_URL: z.string().min(1),
+
+    RESEND_API_KEY: z.string().min(1),
+    RESEND_DOMAIN: z.string(),
+    EMAIL_FROM_ADDRESS: z.string().email(),
   },
 
   /**
@@ -63,6 +70,9 @@ export const env = createEnv({
     FACEBOOK_CLIENT_ID: process.env.FACEBOOK_CLIENT_ID,
     FACEBOOK_CLIENT_SECRET: process.env.FACEBOOK_CLIENT_SECRET,
 
+    GITHUB_ID: process.env.GITHUB_ID,
+    GITHUB_SECRET: process.env.GITHUB_SECRET,
+
     TWILIO_ACCOUNT_SID: process.env.TWILIO_ACCOUNT_SID,
     TWILIO_AUTH_TOKEN: process.env.TWILIO_AUTH_TOKEN,
 
@@ -71,6 +81,10 @@ export const env = createEnv({
 
     CDN_API_KEY: process.env.CDN_API_KEY,
     CDN_UPLOAD_URL: process.env.CDN_UPLOAD_URL,
+
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+    RESEND_DOMAIN: process.env.RESEND_DOMAIN,
+    EMAIL_FROM_ADDRESS: process.env.EMAIL_FROM_ADDRESS,
 
     NEXT_PUBLIC_VERCEL_URL: process.env.NEXT_PUBLIC_VERCEL_URL,
     NEXT_PUBLIC_NODE_ENV: process.env.NODE_ENV,

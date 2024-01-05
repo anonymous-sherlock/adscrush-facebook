@@ -31,6 +31,7 @@ import { cn, formatBytes } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { File as FileIcon, Trash } from "lucide-react"
+import { useAadhaarFiles } from "@/store/index"
 
 // FIXME Your proposed upload exceeds the maximum allowed size, this should trigger toast.error too
 
@@ -47,7 +48,7 @@ interface FileDialogProps<
   setFiles: React.Dispatch<React.SetStateAction<FileWithPreview[] | null>>
   isUploading?: boolean
   disabled?: boolean
-  labelText?:string
+  labelText?: string
 }
 
 export function FileDialog<TFieldValues extends FieldValues>({
@@ -63,9 +64,10 @@ export function FileDialog<TFieldValues extends FieldValues>({
   isUploading = false,
   disabled = false,
   className,
-  labelText="Upload Images",
+  labelText = "Upload Images",
   ...props
 }: FileDialogProps<TFieldValues>) {
+
   const onDrop = React.useCallback(
     (acceptedFiles: FileWithPath[], rejectedFiles: FileRejection[]) => {
       acceptedFiles.forEach((file) => {
@@ -256,57 +258,43 @@ function FileCard({ i, file, files, setFiles }: FileCardProps) {
 
   return (
     <div className="relative flex items-center justify-between gap-2.5">
-      <div className="flex items-center gap-2">
+      <div className="flex-1 w-full flex items-center gap-2">
         {
           !file.type.startsWith("image") ?
-            <div className={cn('relative max-w-xs bg-white shadow-md flex items-center group rounded-md outline outline-[1px] outline-zinc-100 divide-x divide-zinc-200')}>
-              <div className='px-3 py-2 h-full grid gap-2 place-items-center'>
-                <FileIcon className='h-4 w-4 text-blue-500' />
+            <div className={cn('w-full relative max-w-xs bg-white shadow-md flex items-center group rounded-md outline outline-[1px] outline-zinc-100 divide-x divide-zinc-200')}>
+              <div className='px-3 py-2 h-full  grid gap-2 place-items-center'>
+                <FileIcon className='h-4 w-4 text-blue-500 m-2' />
               </div>
-              <div className='px-3 py-2 h-full text-sm truncate'>
-                {file.type}
+              <div className='px-3 py-2 h-full text-sm truncate flex-1'>
+                {file.name}
               </div>
               <div className='px-2 py-2 h-full text-xs truncate'>
                 {(file.size / 1024 / 1024).toFixed(2)}MB
               </div>
-              <span
-                className={cn("absolute right-0 top-2 hidden h-6 w-6 -translate-y-1/2 z-50 translate-x-1/2 cursor-pointer items-center justify-center rounded-full bg-destructive text-destructive duration-300 group-hover:flex")}
-                onClick={() => {
 
-                }}
-              >
-                <Trash width={"50%"} className='text-destructive!' color='red' />
-              </span>
             </div>
             :
             <>
-             <div className={cn('relative max-w-xs bg-white shadow-md flex items-center group rounded-md outline outline-[1px] outline-zinc-100 divide-x divide-zinc-200')}>
-              <div className='px-3 py-2 h-full grid gap-2 place-items-center'>
-              <Image
-                src={cropData ? cropData : file.preview}
-                alt={file.name}
-                className="h-10 w-10 shrink-0 rounded-md"
-                width={40}
-                height={40}
-                loading="lazy"
-              />
-              </div>
-              <div className='px-3 py-2 h-full text-sm truncate'>
-                {file.type}
-              </div>
-              <div className='px-2 py-2 h-full text-xs truncate'>
-                {(file.size / 1024 / 1024).toFixed(2)}MB
-              </div>
-              <span
-                className={cn("absolute right-0 top-2 hidden h-6 w-6 -translate-y-1/2 z-50 translate-x-1/2 cursor-pointer items-center justify-center rounded-full bg-destructive text-destructive duration-300 group-hover:flex")}
-                onClick={() => {
+              <div className={cn('w-full relative max-w-xs bg-white shadow-md flex items-center group rounded-md outline outline-[1px] outline-zinc-100 divide-x divide-zinc-200')}>
+                <div className='px-3 py-2 h-full grid gap-2 place-items-center'>
+                  <Image
+                    src={cropData ? cropData : file.preview}
+                    alt={file.name}
+                    className="h-10 w-10 shrink-0 rounded-md"
+                    width={40}
+                    height={40}
+                    loading="lazy"
+                  />
+                </div>
+                <div className='px-3 py-2 h-full text-sm truncate flex-1'>
+                  {file.name}
+                </div>
+                <div className='px-2 py-2 h-full text-xs truncate'>
+                  {(file.size / 1024 / 1024).toFixed(2)}MB
+                </div>
 
-                }}
-              >
-                <Trash width={"50%"} className='text-destructive!' color='red' />
-              </span>
-            </div>
-             
+              </div>
+
             </>
         }
       </div>

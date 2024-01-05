@@ -1,6 +1,7 @@
 import TitleSection from '@/components/landing-page/title-section'
 import { OnboardingForm } from '@/components/onboarding/onboardingForm'
 import { Shell } from '@/components/shell'
+import { generateEmailVerificationCode } from '@/lib/utils'
 
 function Onboardingpage() {
     return (

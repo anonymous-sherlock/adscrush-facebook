@@ -1,11 +1,12 @@
-import { getAuthSession } from "@/lib/auth";
 import { inferReactQueryProcedureOptions } from "@trpc/react-query";
-import { TRPCError, inferRouterInputs, inferRouterOutputs } from "@trpc/server";
-import { publicProcedure, router } from "./trpc";
+import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
+import { onboardingRouter } from "./routers/onboarding.router";
 import { userRouter } from "./routers/user.router";
+import { router } from "./trpc";
 
 export const appRouter = router({
-  user: userRouter
+  user: userRouter,
+  onboarding: onboardingRouter
 });
 
 export type AppRouter = typeof appRouter;

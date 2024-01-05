@@ -8,7 +8,7 @@ import { httpBatchLink, loggerLink } from "@trpc/client";
 import { SessionProvider } from "next-auth/react";
 import { FC, ReactNode, useState } from "react";
 import superjson from "superjson";
-import { ThemeProvider } from "./next-theme-provider";
+import { NextUIProvider } from '@nextui-org/react'
 
 interface LayoutProps {
   children: ReactNode;
@@ -38,9 +38,7 @@ const Providers: FC<LayoutProps> = ({ children }) => {
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
         <SessionProvider refetchWhenOffline={false}>
-
-          {children}
-
+            {children}
         </SessionProvider>
       </QueryClientProvider>
     </trpc.Provider>
