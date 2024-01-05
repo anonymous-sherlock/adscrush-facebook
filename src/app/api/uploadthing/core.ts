@@ -20,16 +20,6 @@ export const ourFileRouter = {
     })
     .onUploadComplete(async ({ metadata, file }) => {
       console.log("Uploaded by user", metadata.userId);
-      const createdFile = await db.document.create({
-        data: {
-          key: file.key,
-          documentType: file.url,
-          name: file.name,
-          userId: metadata.userId,
-          url: `https://uploadthing-prod.s3.us-west-2.amazonaws.com/${file.key}`,
-        },
-      });
-
     }),
 } satisfies FileRouter;
 
