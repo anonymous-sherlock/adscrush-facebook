@@ -13,3 +13,8 @@ export const getCurrentRole = async () => {
     const session = await getAuthSession();
     return session?.user?.role;
 };
+
+export const getCurrentIsOnboarded = async () => {
+    const session = await getAuthSession();
+    return session?.user?.isOnboarded;
+};

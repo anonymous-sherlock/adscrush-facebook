@@ -1,4 +1,6 @@
 import { db } from "@/db";
+import { generateVerificationToken } from "@/lib/helpers/tokens";
+import { sendVerificationEmail } from "@/lib/mail";
 import { authSchema } from "@/schema/auth.schema";
 import { publicProcedure, router } from "@/server/trpc";
 import { TRPCError } from "@trpc/server";
@@ -26,9 +28,14 @@ export const userRouter = router({
       },
     });
 
+    const verificationToken = await generateVerificationToken(email);
+    await sendVerificationEmail(
+      verificationToken.email,
+      verificationToken.token,
+    );
     return {
       success: true,
-      message: "User created successfully",
+      message: "Confirmation email sent!",
       user: {
         id: newUser.id,
         email: newUser.email,

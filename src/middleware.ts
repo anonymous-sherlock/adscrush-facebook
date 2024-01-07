@@ -8,6 +8,8 @@ export default withAuth(
     const { nextUrl } = req;
     const isLoggedIn = !!req.nextauth.token;
 
+
+
     const isOnboarded = req.nextauth.token?.isOnboarded
 
     const isApiRoute = nextUrl.pathname.startsWith(apiPrefix);
@@ -16,7 +18,7 @@ export default withAuth(
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
 
-    console.log("logged in : ", isLoggedIn)
+    // console.log("tokken in : ", nextUrl.pathname, req.nextauth.token)
     if (isApiAuthRoute) {
       return null;
     }
@@ -27,13 +29,6 @@ export default withAuth(
       }
       return null;
     }
-
-    if (!isOnboarded && !nextUrl.pathname.startsWith(ONBOARDING_REDIRECT)) {
-      if (!isPublicRoute && !isApiAuthRoute && !isAuthRoute && !isApiRoute) {
-        return Response.redirect(new URL(ONBOARDING_REDIRECT, nextUrl));
-      }
-    }
-
 
     if (!isLoggedIn && !isPublicRoute) {
       let callbackUrl = nextUrl.pathname;
@@ -49,17 +44,20 @@ export default withAuth(
       ));
     }
 
+    if (!isOnboarded && !nextUrl.pathname.startsWith(ONBOARDING_REDIRECT) && !nextUrl.pathname.startsWith("/dashboard")) {
+      if (!isPublicRoute && !isApiAuthRoute && !isAuthRoute && !isApiRoute) {
+        return Response.redirect(new URL(ONBOARDING_REDIRECT, nextUrl));
+      }
+    }
     return null;
   },
   {
     callbacks: {
       authorized: ({ req, token }) => {
         const pathname = req.nextUrl.pathname;
-
         const protectedRoutes = [
           ONBOARDING_REDIRECT,
           "/dashboard",
-
         ];
         if (!!token === false && protectedRoutes.includes(pathname)) {
           return false;

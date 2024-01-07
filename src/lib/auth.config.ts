@@ -9,6 +9,8 @@ import { env } from "@/env.mjs";
 import { AuthError } from "@/lib/exceptions/authError";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { compare } from "bcrypt";
+import { getUserById } from "./data/user";
+import { getAccountByUserId } from "./data/account";
 
 function getGoogleCredentials(): { clientId: string; clientSecret: string } {
   const clientId = env.GOOGLE_CLIENT_ID;
@@ -34,6 +36,7 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: "/login",
+    error: "/auth/error",
   },
   providers: [
     GoogleProvider({
@@ -72,7 +75,7 @@ export const authOptions: NextAuthOptions = {
         }
         if (!user.password) {
           throw new AuthError(
-            "You have not signed up using your email. Please try social login.",
+            "Email already in use with Social provider.",
             false
           );
         }
@@ -89,6 +92,15 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    async signIn({ user, account }) {
+      // Allow OAuth without email verification
+      if (account?.provider !== "credentials") return true;
+      const existingUser = await getUserById(user.id);
+      // Prevent sign in without email verification
+      if (!existingUser?.emailVerified) return false;
+
+      return true;
+    },
     async session({ token, session }) {
       if (token) {
         session.user.id = token.id;
@@ -96,27 +108,25 @@ export const authOptions: NextAuthOptions = {
         session.user.email = token.email;
         session.user.image = token.picture;
         session.user.role = token.role;
+        session.user.isOAuth = token.isOAuth
         session.user.isOnboarded = token.isOnboarded
       }
       return session;
     },
-    async jwt({ token, user, trigger, session, profile, account }) {
-      const dbUser = await db.user.findFirst({
-        where: {
-          email: token.email!,
-        },
-      });
-      if (trigger === "update") {
-        // console.log("updated", session)
-        return { ...token, ...session.user };
-      }
-
+    async jwt({ token, user, trigger, session }) {
+      const dbUser = await db.user.findFirst({ where: { email: token.email! }, });
       if (!dbUser) {
         token.id = user!.id;
         return token;
       }
+      const existingAccount = await getAccountByUserId(dbUser.id);
 
+      if (trigger === "update") {
+        // console.log("updated", session)
+        return { ...token, ...session.user };
+      }
       return {
+        isOAuth: !!existingAccount,
         id: dbUser.id,
         name: dbUser.name,
         email: dbUser.email,
@@ -138,6 +148,19 @@ export const authOptions: NextAuthOptions = {
       const dashboardUrl = `${baseUrl}/dashboard`;
       return dashboardUrl;
     },
+  },
+  events: {
+    async linkAccount({ user }) {
+      await db.user.update({
+        where: { id: user.id },
+        data: {
+          emailVerified: new Date()
+        }
+      })
+    },
+    async updateUser({ user }) {
+      console.log("update user:",user)
+    }
   },
   debug: env.NODE_ENV === "development" ? true : false,
 };

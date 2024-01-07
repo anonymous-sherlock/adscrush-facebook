@@ -14,28 +14,28 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { addDetails, validateOtp } from "@/lib/actions/onboarding";
-import useFileUpload from "@/lib/hooks/useFileUpload";
+import useFileUpload from "@/hooks/useFileUpload";
+import { addDetails, sendOnboardingEmailVerifyCode, validateOtp } from "@/lib/actions/onboarding";
 import { catchError, cn } from "@/lib/utils";
 import { FBOnboardingSchema } from "@/schema/onboarding.schema";
 import { FileWithPreview } from "@/types";
+import { Check, Send, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { Icons } from "../Icons";
+import { FormError } from "../form-error";
+import { FormSuccess } from "../form-success";
+import TooltipComponent from "../tooltip-component";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
 import { Separator } from "../ui/separator";
 import { AadharUploader } from "./AadharUploader";
 import { AlternateIdUploader } from "./AlternateIdUploader";
 import { DobPickerForm } from "./Dob";
-import { toast } from "sonner";
-import { FormError } from "../form-error";
-import { Icons } from "../Icons";
-import { Check, Send } from "lucide-react";
 
 
 type OnboardingFormProps = {
-
-
 };
 
 export function OnboardingForm({ }: OnboardingFormProps) {
@@ -84,6 +84,7 @@ export function OnboardingForm({ }: OnboardingFormProps) {
       setSuccess("");
 
       if (!emailVerified) {
+        toast.error("Email is not verified")
         setError("Email not verified")
         return
       }
@@ -112,8 +113,10 @@ export function OnboardingForm({ }: OnboardingFormProps) {
         }).then((data) => {
           setError(data?.error);
           setSuccess(data?.success);
+          if (data?.success) {
+            router.push("/dashboard")
+          }
         });
-
       } catch (err) {
         catchError(err);
       }
@@ -138,17 +141,17 @@ export function OnboardingForm({ }: OnboardingFormProps) {
     }
   }, [timer]);
 
-  async function handleEmailVerification() {
+  async function sendEmailVerification() {
     setError("");
     setSuccess("");
     const email = form.getValues("email")
     startSendingCodeTransition(async () => {
       const parsedEmail = FBOnboardingSchema.shape.email.safeParse(email)
       if (!parsedEmail.success) {
+        toast.error("Email is not valid")
         return setError("Email is not valid")
       }
-
-      await new Promise((resolve) => setTimeout(resolve, 2500));
+      await sendOnboardingEmailVerifyCode(email)
       setTimer(30);
       setOtpSent(true)
 
@@ -160,8 +163,11 @@ export function OnboardingForm({ }: OnboardingFormProps) {
       email: form.getValues("email"),
       otp: otp
     }).then((data) => {
+      setError(data?.error)
+      if (data?.error) toast.error(data?.error)
       if (data?.success) {
         setEmailVerified(true)
+        toast.success(data.success)
       }
 
     })
@@ -223,13 +229,13 @@ export function OnboardingForm({ }: OnboardingFormProps) {
                   )}
                 />
 
-                <div className="flex flex-1 justify-center items-end gap-2">
+                <div className="flex flex-1 shrink-0 justify-center items-end gap-2">
                   <FormItem className="w-full">
                     <FormLabel className="text-card-foreground">Verfication code</FormLabel>
                     <FormControl>
                       <Input placeholder="DJZ-TLX" value={otp} onChange={({ target }) => setOtp(target.value)} disabled={emailVerified || !otpSent} />
                     </FormControl>
-                    <FormMessage />
+                    <FormMessage aria-errormessage="otp not valid" />
                   </FormItem>
                   {emailVerified || !otpSent ? null : (
                     <Button
@@ -237,17 +243,23 @@ export function OnboardingForm({ }: OnboardingFormProps) {
                       className="m-0 self-end text-sm shrink-0"
                       variant="secondary"
                       onClick={handleOtpValidation}
-                      disabled={emailVerified}
-                    >
-                      <Check className="h-4 w-4 text-green-500" />
+                      disabled={otp.length < 6 || emailVerified}
+                    >{
+                        otp.length < 6 || emailVerified ?
+                          <TooltipComponent message="OTP is not valid" >
+                            <X className="h-4 w-4 text-red-600" />
+                          </TooltipComponent>
+                          :
+                          <Check className="h-4 w-4 text-green-600" />
+                      }
                     </Button>
                   )}
 
 
                   {
                     !emailVerified ?
-                      <Button type="button" className="m-0 self-end text-sm shrink-0" variant="secondary"
-                        onClick={handleEmailVerification}
+                      <Button type="button" className="m-0 self-end text-sm shrink-0 disabled:cursor-not-allowed" variant="secondary"
+                        onClick={sendEmailVerification}
                         disabled={isSendingCode || timer !== null}
                       >
                         {timer !== null ? (
@@ -356,6 +368,7 @@ export function OnboardingForm({ }: OnboardingFormProps) {
               <AlternateIdUploader files={alternateIdFiles} setFiles={setAlternateIdFiles} />
 
             </div>
+            <FormSuccess message={success} />
             <FormError message={error} />
             <Button
               type="submit"

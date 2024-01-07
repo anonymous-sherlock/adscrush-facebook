@@ -2,11 +2,14 @@
 
 import { FBOnboardingSchema } from "@/schema/onboarding.schema"
 
+import { db } from "@/db"
 import { fileMetaDetailsSchema } from "@/types/fileUploader"
+import { revalidatePath } from "next/cache"
 import { z } from "zod"
 import { getCurrentUser } from "../auth"
-import { db } from "@/db"
-import { revalidatePath } from "next/cache"
+import { generateOnboardingEmailVerificationToken } from "../helpers/tokens"
+import { sendOnboardingVerificationEmail } from "../mail"
+import { ONBOARDING_REDIRECT } from "@routes"
 
 
 
@@ -28,9 +31,6 @@ export async function addDetails(
 ) {
   try {
     const parserData = extendedOnboardingSchema.safeParse(rawInput)
-
-    console.log(parserData)
-
     if (!parserData.success) {
       return {
         error: parserData.error.message ?? "Bad Request",
@@ -51,6 +51,14 @@ export async function addDetails(
       }
     }
 
+    const existingOnboarding = await db.onboarding.findFirst({ where: { userId: user.id } })
+
+    if (existingOnboarding) {
+      return {
+        error: "You already have onboarded",
+      }
+    }
+
     const [onboardingDetails, userDetails] = await db.$transaction([
       db.onboarding.create({
         data: {
@@ -61,7 +69,8 @@ export async function addDetails(
           facebook_password: input.fbPassword,
           facebook_profile_link: input.fbProfileLink,
           dob: input.dob,
-          userId: user.id
+          userId: user.id,
+          emailVerified: input.emailVerified ? new Date() : null
         }
       }),
       db.user.update({
@@ -117,7 +126,7 @@ export async function addDetails(
         },
       })
     ])
-    revalidatePath(`/dashboard`)
+    revalidatePath(ONBOARDING_REDIRECT)
     return {
       success: "Onboarded Successfully",
     }
@@ -142,11 +151,40 @@ export async function validateOtp(
       }
     }
     const { email, otp } = parserData.data
-    console.log(email, ", OTP : ", otp)
+    const existingToken = await db.onboardingEmailVerification.findUnique({
+      where: { email: email, token: otp }
+    });
 
-    return {
-      success: "Email Verfied Successfully"
+    if (!existingToken) {
+      return { error: "Otp is not valid or expired!" };
     }
+
+    const hasExpired = new Date(existingToken.expires) < new Date();
+
+    if (hasExpired) {
+      return { error: "Otp has expired!" };
+    }
+
+
+    await db.onboardingEmailVerification.delete({
+      where: { id: existingToken.id }
+    });
+
+    return { success: "Email verified Successfully!" };
+  } catch (error) {
+    console.log(error)
+    return null
+  }
+}
+
+export async function sendOnboardingEmailVerifyCode(email: string) {
+  try {
+    const verificationToken = await generateOnboardingEmailVerificationToken(email)
+    await sendOnboardingVerificationEmail(
+      verificationToken.email,
+      verificationToken.token,
+    );
+
   } catch (error) {
     console.log(error)
     return null

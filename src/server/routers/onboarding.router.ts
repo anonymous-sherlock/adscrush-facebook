@@ -1,7 +1,7 @@
-import { FBOnboardingSchema } from "@/schema/onboarding.schema";
-import { privateProcedure, router } from "../trpc";
-import { z } from "zod";
 import { db } from "@/db";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
+import { privateProcedure, router } from "../trpc";
 
 
 const accountSchema = z.object({
@@ -11,12 +11,12 @@ const accountSchema = z.object({
 });
 const groupAccountSchema = z.object({
   label: z.string(),
-  accounts: z.array(accountSchema),
+  accounts: accountSchema,
 
 });
 export const onboardingRouter = router({
-  getAllOnboardingName: privateProcedure.output(z.array(groupAccountSchema)).query(async ({ ctx, input }) => {
-    const onboardings = await db.onboarding.findMany({
+  getOnboardingName: privateProcedure.output(groupAccountSchema).query(async ({ ctx, input }) => {
+    const onboarding = await db.onboarding.findFirst({
       where: {
         userId: ctx.userId
       },
@@ -26,22 +26,22 @@ export const onboardingRouter = router({
       }
     })
 
+    if (!onboarding) {
+      throw new TRPCError({ code: "NOT_FOUND", message: "user not onboarded yet" })
+    }
 
-    return [
-      {
-        label: "Facebook Account",
-        accounts: onboardings.map((acc) => ({
-          id: acc.id,
-          label: acc.name,
-          value: acc.name.toLowerCase().replace(" ", "-"),
-        })),
-      },
-    ];
-
+    return {
+      label: "Facebook Account",
+      accounts: {
+        id: onboarding.id,
+        label: onboarding.name,
+        value: onboarding.name.toLowerCase().replace(" ", "-"),
+      }
+    }
   }),
   getAll: privateProcedure.query(async ({ ctx, input }) => {
     try {
-      const onboardings = await db.onboarding.findMany({
+      const onboarding = await db.onboarding.findFirst({
         where: {
           userId: ctx.userId
         },
@@ -55,14 +55,12 @@ export const onboardingRouter = router({
         }
       })
 
-      return onboardings
+      return onboarding
 
     } catch (error) {
       console.log(error)
       return null
 
     }
-
-
   })
 })

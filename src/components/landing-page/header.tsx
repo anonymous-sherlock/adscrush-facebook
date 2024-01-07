@@ -3,15 +3,16 @@ import Logo from '@/public/logo.png';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { useCurrentUser } from '@/lib/hooks/use-current-user';
+import { useCurrentUser } from '@/hooks/use-current-user';
 import { authPages } from '@routes';
 import { Button, buttonVariants } from '../ui/button';
 import { getCurrentUser } from '@/lib/auth';
+import UserAccountNav from '../UserAccountNav';
 
 
 const Header = async () => {
 
-const user= await getCurrentUser()
+  const user = await getCurrentUser()
   return (
     <header
       className="p-4
@@ -49,31 +50,46 @@ const user= await getCurrentUser()
       "
       >{
           user ?
-            <Link
-              href='/dashboard'
-              className={buttonVariants({
-                variant: 'ghost',
-              })}>
-              Dashboard
-            </Link>
-            : null
+            <>
+              <Link
+                href='/dashboard'
+                className={buttonVariants({
+                  variant: 'ghost',
+                })}>
+                Dashboard
+              </Link>
+              <UserAccountNav
+                name={
+                  !user.name
+                    ? 'Your Account'
+                    : `${user.name}`
+                }
+                email={user.email ?? ''}
+                imageUrl={user.image ?? ''}
+                user={user}
+              />
+            </>
+            :
+            <>
+              <Link href={authPages.login}>
+                <Button
+                  variant="btn-secondary"
+                  className=" p-1 hidden sm:block"
+                >
+                  Login
+                </Button>
+              </Link>
+              <Link href={authPages.register}>
+                <Button
+                  variant="btn-primary"
+                  className="whitespace-nowrap"
+                >
+                  Sign Up
+                </Button>
+              </Link>
+            </>
         }
-        <Link href={authPages.login}>
-          <Button
-            variant="btn-secondary"
-            className=" p-1 hidden sm:block"
-          >
-            Login
-          </Button>
-        </Link>
-        <Link href={authPages.register}>
-          <Button
-            variant="btn-primary"
-            className="whitespace-nowrap"
-          >
-            Sign Up
-          </Button>
-        </Link>
+
       </aside>
     </header>
   );

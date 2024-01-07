@@ -1,4 +1,4 @@
-import useFileUpload from "@/lib/hooks/useFileUpload";
+import useFileUpload from "@/hooks/useFileUpload";
 import { useToast } from "./ui/use-toast";
 
 import { useState } from "react";

@@ -16,6 +16,7 @@ const AccountsDashboard = () => {
 
   const { data: accounts, isLoading } = trpc.onboarding.getAll.useQuery();
 
+
   return (
     <main className="container  md:p-2 md:px-8">
       <div className="mt-8 flex flex-col items-start justify-between gap-4 border-b border-gray-200 pb-5 sm:flex-row sm:items-center sm:gap-0">
@@ -26,7 +27,7 @@ const AccountsDashboard = () => {
 
 
 
-      {/* display all user ccampaign */}
+      {/* display all user account */}
       {accounts && accounts?.length !== 0 ? (
         <ul className="mt-8 grid grid-cols-1 gap-6 divide-y divide-zinc-200 md:grid-cols-2 lg:grid-cols-3">
           {accounts

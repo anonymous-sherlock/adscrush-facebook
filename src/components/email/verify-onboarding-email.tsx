@@ -15,7 +15,7 @@ interface AdscrushConfirmEmailProps {
   validationCode?: string;
 }
 
-export const VerficationEmail = ({
+export const VerifyOnboardingEmail = ({
   validationCode = 'DJZ-TLX',
 }: AdscrushConfirmEmailProps) => (
   <Html>
@@ -34,8 +34,7 @@ export const VerficationEmail = ({
           </Section>
           <Heading style={h1}>Confirm your email address</Heading>
           <Text style={heroText}>
-            Your confirmation code is below - enter it in your open browser window
-            and we&apos;ll help you get signed in.
+            Your confirmation code is below - enter it in your open browser window.
           </Text>
 
           <Section style={codeBox}>
@@ -64,25 +63,7 @@ export const VerficationEmail = ({
   </Html>
 );
 
-export default VerficationEmail;
-
-const footerText = {
-  fontSize: '12px',
-  color: '#b7b7b7',
-  lineHeight: '15px',
-  textAlign: 'left' as const,
-  marginBottom: '50px',
-};
-
-
-
-const footerLogos = {
-  marginBottom: '32px',
-  paddingLeft: '8px',
-  paddingRight: '8px',
-  width: '100%',
-};
-
+export default VerifyOnboardingEmail;
 
 const main = {
   backgroundColor: '#ffffff',

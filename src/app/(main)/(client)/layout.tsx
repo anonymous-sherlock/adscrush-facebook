@@ -1,16 +1,16 @@
 import { FC } from 'react'
-import DashboardHeader from './dashboard/_components/dashboard-header'
-interface MainlayoutProps {
+import DashboardHeader from '@/components/dashboard/dashboard-header'
+interface ClientLayoutProps {
     children: React.ReactNode
 }
 
-const MainLayout: FC<MainlayoutProps> = ({ children }: MainlayoutProps) => {
+const ClientLayout: FC<ClientLayoutProps> = ({ children }: ClientLayoutProps) => {
     return (
-        <div className="hidden flex-col md:flex">
+        <div className="">
             <DashboardHeader />
             {children}
         </div>
     )
 }
 
-export default MainLayout
+export default ClientLayout

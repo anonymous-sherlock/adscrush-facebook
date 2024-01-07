@@ -8,6 +8,24 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export function formatPrice(
+  price: number | string,
+  options: {
+    currency?: "INR" | "USD" | "EUR" | "GBP" | "BDT";
+    notation?: Intl.NumberFormatOptions["notation"];
+  } = {},
+) {
+  const { currency = "INR", notation = "standard" } = options; // Change here
+
+  const numericPrice = typeof price === "string" ? parseFloat(price) : price;
+
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency,
+    notation,
+    maximumFractionDigits: 2,
+  }).format(numericPrice);
+}
 
 export function absoluteUrl(path: string) {
   if (typeof window !== "undefined") return path;
@@ -52,7 +70,7 @@ export function isArrayOfFile(files: unknown): files is File[] {
 
 
 // utils/generateVerificationCode.ts
-export const generateEmailVerificationCode = (): string => {
+export const generateVerifyCode = (): string => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let code = '';
   for (let i = 0; i < 6; i++) {
@@ -63,3 +81,15 @@ export const generateEmailVerificationCode = (): string => {
   code = code.substring(0, 3) + '-' + code.substring(3);
   return code;
 };
+
+
+
+type TrpcFunction<T> = () => Promise<T>;
+export async function wrapTrpcCall<T>(trpcFunction: TrpcFunction<T>): Promise<T | null> {
+  try {
+    return await trpcFunction();
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}

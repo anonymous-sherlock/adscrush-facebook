@@ -1,13 +1,13 @@
 "use client"
 
-import * as React from "react"
-import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useRouter } from "next/navigation"
+import * as React from "react"
 import { useForm } from "react-hook-form"
-import { toast } from "sonner"
 import type { z } from "zod"
 
-import { authSchema } from "@/schema/auth.schema"
+import { Icons } from "@/components/Icons"
+import { PasswordInput } from "@/components/auth/password-input"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -18,39 +18,41 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Icons } from "@/components/Icons"
-import { PasswordInput } from "@/components/auth/password-input"
-import { trpc } from "@/app/_trpc/client"
+import { register } from "@/lib/actions/register"
+import { registerSchema } from "@/schema/auth.schema"
+import { FormError } from "../form-error"
+import { FormSuccess } from "../form-success"
 
-type Inputs = z.infer<typeof authSchema>
+type Inputs = z.infer<typeof registerSchema>
 
 export function SignUpForm() {
   const router = useRouter()
-
-  const { mutateAsync: addUser, isLoading, data } = trpc.user.add.useMutation({
-    onSuccess(data) {
-      if (data.success)
-        toast.success(data.message);
-      router.push("/login");
-    },
-    onError(error) {
-      toast.error(error.message)
-    },
+  const [error, setError] = React.useState<string | undefined>("");
+  const [success, setSuccess] = React.useState<string | undefined>("");
+  const [isPending, startTransition] = React.useTransition();
 
 
-  })
 
   // react-hook-form
   const form = useForm<Inputs>({
-    resolver: zodResolver(authSchema),
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       email: "",
       password: "",
+      name: ""
     },
   })
 
-  function onSubmit(data: Inputs) {
-    addUser(data)
+  function onSubmit(values: Inputs) {
+    setError("");
+    setSuccess("");
+    startTransition(() => {
+      register(values)
+        .then((data) => {
+          setError(data.error);
+          setSuccess(data.success);
+        });
+    });
   }
 
   return (
@@ -59,6 +61,19 @@ export function SignUpForm() {
         className="grid gap-4"
         onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
       >
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Name</FormLabel>
+              <FormControl>
+                <Input placeholder="John Doe" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="email"
@@ -85,8 +100,12 @@ export function SignUpForm() {
             </FormItem>
           )}
         />
-        <Button disabled={isLoading}>
-          {isLoading && (
+
+        <FormError message={error} />
+        <FormSuccess message={success} />
+
+        <Button disabled={isPending}>
+          {isPending && (
             <Icons.spinner
               className="mr-2 h-4 w-4 animate-spin"
               aria-hidden="true"

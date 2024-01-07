@@ -8,7 +8,6 @@ type UserId = string;
 export type ExtendedUser = DefaultSession["user"] & {
   id: UserId;
   role: UserRole;
-  isTwoFactorEnabled: boolean;
   isOAuth: boolean;
   isOnboarded: date
 };
@@ -17,7 +16,8 @@ declare module "next-auth/jwt" {
   interface JWT {
     id: UserId;
     role: UserRole;
-    isOnboarded: date
+    isOAuth: boolean;
+    isOnboarded: date;
   }
 }
 

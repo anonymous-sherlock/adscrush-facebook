@@ -30,6 +30,9 @@ export const loginSchema = z.object({
   password: z.string(),
 });
 
+export const registerSchema =authSchema.extend({
+  name:z.string({required_error:"name is required"}).min(2,{message:"Name must have more than 2 character"})
+})
 export const verifyEmailSchema = z.object({
   code: z
     .string()
@@ -53,6 +56,7 @@ export const resetPasswordSchema = z
     message: "Passwords do not match",
     path: ["confirmPassword"],
   });
+
 
 export const userPrivateMetadataSchema = z.object({
   role: z.enum(["user", "admin", "super_admin"]),

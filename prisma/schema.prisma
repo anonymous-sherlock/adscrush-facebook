@@ -29,23 +29,21 @@ model Account {
 }
 
 model User {
-  id            String       @id @default(cuid())
+  id            String      @id @default(cuid())
   name          String?
-  email         String?      @unique
+  email         String?     @unique
   emailVerified DateTime?
   image         String?
   password      String?
   isOnboarded   DateTime?
-  role          UserRole     @default(USER)
+  role          UserRole    @default(USER)
   accounts      Account[]
-  onboardings   Onboarding[]
+  onboarding    Onboarding?
   documents     Document[]
   payments      Payment[]
-  wallet        Wallet?      @relation(fields: [walletId], references: [id])
-  walletId      String?      @unique
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  wallet        Wallet?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
 
 enum UserRole {
@@ -56,7 +54,8 @@ enum UserRole {
 model Wallet {
   id       String    @id @default(cuid())
   balance  Float     @default(0)
-  user     User?
+  user     User?     @relation(fields: [userId], references: [id])
+  userId   String    @unique
   payments Payment[]
 
   @@map("wallet")
@@ -98,11 +97,10 @@ model Onboarding {
   facebook_password     String
   facebook_profile_link String
   emailVerified         DateTime?
-  user                  User              @relation(fields: [userId], references: [id])
-  userId                String
+  user                  User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId                String?           @unique
   documents             Document[]
   status                Onboarding_Status @default(Hold)
-  documentId            String?
   createdAt             DateTime          @default(now())
   updatedAt             DateTime          @updatedAt
 
@@ -122,27 +120,25 @@ model Document {
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
   files        Files[]
-  onboarding   Onboarding       @relation(fields: [onboardingId], references: [id])
+  onboarding   Onboarding       @relation(fields: [onboardingId], references: [id], onDelete: Cascade)
   onboardingId String
-  filesId      String?
-  user         User             @relation(fields: [userId], references: [id])
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String
 
   @@map("documents")
 }
 
 model Files {
-  id               String   @id @default(uuid())
+  id               String    @id @default(uuid())
   name             String
   size             Int
   type             String
   url              String
   originalFileName String
   uploadPath       String?
-  createdAt        DateTime @default(now())
-
-  Document   Document? @relation(fields: [documentId], references: [id])
-  documentId String?
+  createdAt        DateTime  @default(now())
+  Document         Document? @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  documentId       String?
 
   @@map("files")
 }
@@ -152,12 +148,21 @@ enum Document_ID_TYPE {
   ALTERNATE
 }
 
+model VerificationToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
+  @@map("verification_tokens")
+}
+
 model OnboardingEmailVerification {
-  id         String   @id @default(cuid())
-  email      String   @unique
-  token      String
-  isVerified DateTime
-  expires    DateTime
+  id      String   @id @default(cuid())
+  email   String   @unique
+  token   String
+  expires DateTime
 
   @@unique([email, token])
   @@map("onboarding_email_verification")

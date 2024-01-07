@@ -1,13 +1,15 @@
 "use client"
 
-import * as React from "react"
 import {
   CaretSortIcon,
   CheckIcon,
   PlusCircledIcon,
 } from "@radix-ui/react-icons"
+import * as React from "react"
 
+import { trpc } from "@/app/_trpc/client"
 import { cn } from "@/lib/utils"
+import { RouterOutputs } from "@/server"
 import {
   Avatar,
   AvatarFallback,
@@ -24,68 +26,27 @@ import {
   CommandSeparator,
 } from "@/ui/command"
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/ui/dialog"
-import { Input } from "@/ui/input"
-import { Label } from "@/ui/label"
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/ui/popover"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/ui/select"
-import { trpc } from "@/app/_trpc/client"
-import { Router } from "next/router"
-import { RouterOutputs } from "@/server"
-import Link from "next/link"
 import { ONBOARDING_REDIRECT } from "@routes"
+import Link from "next/link"
 
-const groups = [
-  {
-    label: "Facebook Account",
-    teams: [
-      {
-        label: "Alicia Koch",
-        value: "personal",
-      },
-      {
-        label: "Acme Inc.",
-        value: "acme-inc",
-      },
-      {
-        label: "Monsters Inc.",
-        value: "monsters",
-      },
-    ],
-  },
-]
-
-type Account = RouterOutputs["onboarding"]["getAllOnboardingName"][number]["accounts"][number]
+type Account = RouterOutputs["onboarding"]["getOnboardingName"]["accounts"];
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>
 
 interface TeamSwitcherProps extends PopoverTriggerProps {
-  onboardings: RouterOutputs["onboarding"]["getAllOnboardingName"]
+  onboarding: RouterOutputs["onboarding"]["getOnboardingName"]
 }
 
-export default function AccountSwitcher({ className, onboardings }: TeamSwitcherProps) {
-  const { data: groups } = trpc.onboarding.getAllOnboardingName.useQuery(undefined, {
-    initialData: onboardings
+export default function AccountSwitcher({ className, onboarding }: TeamSwitcherProps) {
+  const { data: group } = trpc.onboarding.getOnboardingName.useQuery(undefined, {
+    initialData: onboarding
   })
   const [open, setOpen] = React.useState(false)
-  const [selectedTeam, setSelectedTeam] = React.useState<Account>(groups[0].accounts[0])
+  const [selectedTeam, setSelectedTeam] = React.useState<Account>(group.accounts)
 
   return (
     <>
@@ -115,14 +76,14 @@ export default function AccountSwitcher({ className, onboardings }: TeamSwitcher
             <CommandList>
               <CommandInput placeholder="Search account..." />
               <CommandEmpty>No account found.</CommandEmpty>
-              {groups.map((group) => (
+           
                 <CommandGroup key={group.label} heading={group.label}>
-                  {group.accounts.map((acc) => (
-                    <Link href={acc.id} key={acc.id} >
+                 
+                    <Link href={`/accounts/${group.accounts.id}`} key={group.accounts.id} >
                       <CommandItem
-                        value={acc.id}
+                        value={group.accounts.id}
                         onSelect={() => {
-                          setSelectedTeam(acc)
+                          setSelectedTeam(group.accounts)
                           setOpen(false)
                         }}
                         className="text-sm"
@@ -130,31 +91,30 @@ export default function AccountSwitcher({ className, onboardings }: TeamSwitcher
 
                         <Avatar className="mr-2 h-5 w-5">
                           <AvatarImage
-                            src={`https://avatar.vercel.sh/${acc.id}.png`}
-                            alt={acc.label}
+                            src={`https://avatar.vercel.sh/${group.accounts.id}.png`}
+                            alt={group.accounts.label}
                             className=""
                           />
                           <AvatarFallback>SC</AvatarFallback>
                         </Avatar>
-                        {acc.label}
+                        {group.accounts.label}
                         <CheckIcon
                           className={cn(
                             "ml-auto h-4 w-4",
-                            selectedTeam.id === acc.id
+                            selectedTeam.id === group.accounts.id
                               ? "opacity-100"
                               : "opacity-0"
                           )}
                         />
                       </CommandItem>
                     </Link>
-                  ))}
                 </CommandGroup>
-              ))}
             </CommandList>
-            <CommandSeparator />
+
+
+            {/* <CommandSeparator />
             <CommandList>
               <CommandGroup>
-
 
                 <CommandItem>
                   <Link href={ONBOARDING_REDIRECT} className="flex w-full ">
@@ -163,13 +123,12 @@ export default function AccountSwitcher({ className, onboardings }: TeamSwitcher
                   </Link>
                 </CommandItem>
 
-
               </CommandGroup>
-            </CommandList>
+            </CommandList> */}
+
           </Command>
         </PopoverContent>
       </Popover>
-
     </>
   )
 }
