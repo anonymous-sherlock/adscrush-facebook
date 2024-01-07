@@ -1,20 +1,17 @@
 "use client";
 import { trpc } from "@/app/_trpc/client";
-import { ONBOARDING_STATUS } from "@/constants/index";
 import { cn } from "@/lib/utils";
 import { ONBOARDING_REDIRECT } from "@routes";
-import { format } from "date-fns";
-import { Ghost, MoreHorizontal, Plus } from "lucide-react";
+import { Ghost } from "lucide-react";
 import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
-import { CustomBadge } from "../CustomBadge";
 import { buttonVariants } from "../ui/button";
 import { UserAccountCard } from "./AccountCard";
 
 
 const AccountsDashboard = () => {
 
-  const { data: accounts, isLoading } = trpc.onboarding.getAll.useQuery();
+  const { data: account, isLoading } = trpc.onboarding.getAll.useQuery();
 
 
   return (
@@ -28,23 +25,17 @@ const AccountsDashboard = () => {
 
 
       {/* display all user account */}
-      {accounts && accounts?.length !== 0 ? (
+      {account  ? (
         <ul className="mt-8 grid grid-cols-1 gap-6 divide-y divide-zinc-200 md:grid-cols-2 lg:grid-cols-3">
-          {accounts
-            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-            .map((acc) => (
               <UserAccountCard
-                key={acc.id}
-                name={acc.name}
-                id={acc.id}
-                status={acc.status}
-                createdAt={acc.createdAt}
-                profileLink={acc.facebook_profile_link}
-                username={acc.facebook_username}
-
+                key={account.id}
+                name={account.name}
+                id={account.id}
+                status={account.status}
+                createdAt={account.createdAt}
+                profileLink={account.facebook_profile_link}
+                username={account.facebook_username}
               />
-
-            ))}
         </ul>
       ) : isLoading ? (
         <Skeleton height={100} className="my-2" count={3} />

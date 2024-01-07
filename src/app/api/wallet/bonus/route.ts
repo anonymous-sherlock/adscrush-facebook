@@ -50,7 +50,7 @@ async function updateWalletBalances() {
 const job = schedule.scheduleJob('*/1 * * * *', updateWalletBalances);
 
 
-export async function handler(req: NextRequest, res: NextResponse) {
+async function handler(req: NextRequest, res: NextResponse) {
   return NextResponse.json({ success: true }, { status: 200 });
 }
 export { handler as GET, handler as POST };
