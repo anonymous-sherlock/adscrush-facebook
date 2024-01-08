@@ -13,9 +13,10 @@ export function formatPrice(
   options: {
     currency?: "INR" | "USD" | "EUR" | "GBP" | "BDT";
     notation?: Intl.NumberFormatOptions["notation"];
+    decimal?: boolean | number
   } = {},
 ) {
-  const { currency = "INR", notation = "standard" } = options; // Change here
+  const { currency = "INR", notation = "standard", decimal = false } = options; // Change here
 
   const numericPrice = typeof price === "string" ? parseFloat(price) : price;
 
@@ -23,7 +24,7 @@ export function formatPrice(
     style: "currency",
     currency,
     notation,
-    maximumFractionDigits: 2,
+    maximumFractionDigits: !decimal ? 0 : Number(decimal),
   }).format(numericPrice);
 }
 

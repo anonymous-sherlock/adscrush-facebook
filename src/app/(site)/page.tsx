@@ -1,20 +1,11 @@
 import TitleSection from '@/components/landing-page/title-section';
 import { Button } from '@/components/ui/button';
-import Image from 'next/image';
-import React from 'react';
-import Banner from '../../../public/appBanner.png';
-import Cal from '../../../public/cal.png';
-import Diamond from '../../../public/icons/diamond.svg';
-import CheckIcon from '../../../public/icons/check.svg';
-import { CLIENTS, PRICING_CARDS, PRICING_PLANS, USERS } from '@/lib/constants';
-import { randomUUID } from 'crypto';
-import { twMerge } from 'tailwind-merge';
-import clsx from 'clsx';
-import CustomCard from '@/components/landing-page/custom-card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { CardContent, CardDescription, CardTitle } from '@/components/ui/card';
-import Link from 'next/link';
+import { CLIENTS } from '@/lib/constants';
 import { authPages } from '@routes';
+import Image from 'next/image';
+import Link from 'next/link';
+import Cal from '../../../public/cal.png';
+import Mainbanner from '../../../public/main-banner.jpg';
 
 const HomePage = () => {
   return (
@@ -28,12 +19,14 @@ const HomePage = () => {
       sm:flex-col
       gap-4
       md:justify-center
-      md:items-center"
+      md:items-center
+      relative"
+
       >
         <TitleSection
-          pill="✨ Rent Your FB Account"
-          title="Monetize Your Facebook Earn Extra Income Today!"
-
+          pill="✨ Monetize Your Facebook"
+          title="Rent Your Facebook Account Earn Extra Income Today!"
+          titleStyles='text-4xl'
         />
         <div
           className="bg-white
@@ -56,39 +49,56 @@ const HomePage = () => {
             z-[9999]
           "
           >
-            <Link href={authPages.register}>
+            <Link href={authPages.register} className='w-full'>
               Get Started
             </Link>
           </Button>
         </div>
+
+        {/* only decoration */}
         <div
-          className="md:mt-[-90px]
-          sm:w-full
-          w-[750px]
+          className="w-full
+          blur-[120px]
+          rounded-full
+          h-32
+          absolute
+          bg-brand-primaryPurple/50
+          -z-100
+          md:bottom-54
+          bottom-52
+        "
+        />
+        <div
+          className="mt-10
+          max-w-[700px]
           flex
           justify-center
           items-center
-          mt-[-40px]
           relative
           sm:ml-0
-          ml-[-50px]
+          rounded-2xl
         "
         >
-          <Image
-            src={Banner}
-            alt="Application Banner"
-          />
-          <div
-            className="bottom-0
-            top-[50%]
-            bg-gradient-to-t
-            dark:from-background
-            left-0
-            right-0
-            absolute
-            z-10
-          "
-          ></div>
+         
+            <div className="flow-root sm:mt-4 mb-20 md:mb-6">
+              <div className="m-2 rounded-xl bg-gray-900/5 p-2 ring-1 ring-inset ring-gray-900/10 lg:-m-4 lg:rounded-2xl lg:p-4">
+                <Image
+                  src={Mainbanner}
+                  alt="uploading preview"
+                  width={1024}
+                  height={1024}
+                  quality={100}
+                  priority
+                  className="rounded-md w-full bg-white p-2  shadow-2xl ring-1 ring-gray-900/10 z-50"
+                />
+              </div>
+            </div>
+          
+          {/* <Image
+            src={Mainbanner}
+            alt="Adscrush Banner image"
+            className="rounded-2xl"
+          /> */}
         </div>
       </section>
       <section className="relative">
@@ -198,7 +208,8 @@ const HomePage = () => {
           />
         </div>
       </section>
-      <section className="relative">
+
+      {/* <section className="relative">
         <div
           className="w-full
           blur-[120px]
@@ -228,7 +239,7 @@ const HomePage = () => {
           />
           {[...Array(2)].map((arr, index) => (
             <div
-              key={randomUUID()}
+              key={index}
               className={twMerge(
                 clsx('mt-10 flex flex-nowrap gap-6 self-start', {
                   'flex-row-reverse': index === 1,
@@ -279,17 +290,17 @@ const HomePage = () => {
             </div>
           ))}
         </div>
-      </section>
+      </section> */}
 
 
-      <section
+      {/* <section
         className="mt-20
         px-4
         sm:px-6
       "
       >
         <TitleSection
-          title="The Perfect Plan For You"
+          title="The Perfect Start For You"
           subheading="Experience all the benefits of our platform. Select a plan that suits your needs and take your productivity to new heights."
           pill="Pricing"
         />
@@ -304,7 +315,7 @@ const HomePage = () => {
         mt-10
         "
         >
-          {/* {PRICING_CARDS.map((card) => (
+          {PRICING_CARDS.map((card) => (
             <CustomCard
               key={card.planType}
               className={clsx(
@@ -397,9 +408,10 @@ const HomePage = () => {
                 </ul>
               }
             />
-          ))} */}
+          ))}
         </div>
-      </section>
+      </section> */}
+
     </>
   );
 };

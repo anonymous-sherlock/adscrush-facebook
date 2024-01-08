@@ -3,10 +3,14 @@ import { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { onboardingRouter } from "./routers/onboarding.router";
 import { userRouter } from "./routers/user.router";
 import { router } from "./trpc";
+import { dashboardRouter } from "./routers/dashboard.router";
+import { adminRouter } from "./routers/admin.router";
 
 export const appRouter = router({
   user: userRouter,
-  onboarding: onboardingRouter
+  onboarding: onboardingRouter,
+  dashboard: dashboardRouter,
+  admin: adminRouter
 });
 
 export type AppRouter = typeof appRouter;

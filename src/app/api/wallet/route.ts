@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { NextRequest, NextResponse } from "next/server";
-import schedule from "node-schedule";
+import { RecurrenceRule, scheduleJob } from "node-schedule";
 
 async function updateWalletBalances() {
   try {
@@ -23,7 +23,7 @@ async function updateWalletBalances() {
             where: { id: user.wallet.id },
             data: {
               balance: {
-                increment: 50,
+                increment: user.dailyBonusLimit,
               },
             },
           });
@@ -31,7 +31,6 @@ async function updateWalletBalances() {
           // Wallet doesn't exist, create a new wallet for the user
           const newWallet = await db.wallet.create({
             data: {
-              balance: 50, // Set initial balance
               user: { connect: { id: user.id } },
             },
           });
@@ -47,10 +46,8 @@ async function updateWalletBalances() {
   }
 }
 
-const job = schedule.scheduleJob('*/1 * * * *', updateWalletBalances);
+const job = scheduleJob('*/1 * * * *', updateWalletBalances);
 
-
-async function handler(req: NextRequest, res: NextResponse) {
-  return NextResponse.json({ success: true }, { status: 200 });
+export async function GET(req: NextRequest, res: NextResponse) {
+  return NextResponse.json({ success: true })
 }
-export { handler as GET, handler as POST };

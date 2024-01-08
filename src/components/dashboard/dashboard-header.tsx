@@ -1,20 +1,22 @@
-import React from 'react'
-import AccountSwitcher from '../../app/(main)/(client)/dashboard/_components/account-switcher'
-import { MainNav } from '../../app/(main)/(client)/dashboard/_components/main-nav'
-import UserAccountNav from '@/components/UserAccountNav'
-import { getCurrentUser } from '@/lib/auth'
+"use server"
 import { server } from '@/app/_trpc/server'
+import UserAccountNav from '@/components/UserAccountNav'
 import { WalletBalance } from '@/components/wallet/WalletBallance'
 import { db } from '@/db'
-import { redirect } from 'next/navigation'
-import { ONBOARDING_REDIRECT } from '@routes'
+import { getCurrentUser } from '@/lib/auth'
 import { wrapTrpcCall } from '@/lib/utils'
+import { ONBOARDING_REDIRECT } from '@routes'
+import { redirect } from 'next/navigation'
+import AccountSwitcher from './account-switcher'
+import { MainNav } from './main-nav'
+import { Search } from './search'
 
 async function DashboardHeader() {
   const user = await getCurrentUser()
 
   const onboardingName = await wrapTrpcCall(() => server.onboarding.getOnboardingName());
   if (!onboardingName) redirect(ONBOARDING_REDIRECT)
+
 
   const wallet = await db.wallet.findFirst({ where: { user: { id: user?.id } } })
 
@@ -24,7 +26,7 @@ async function DashboardHeader() {
         <AccountSwitcher onboarding={onboardingName} />
         <MainNav className="mx-6" />
         <div className="ml-auto flex items-center space-x-4">
-          <search />
+          <Search />
 
           <WalletBalance balance={wallet?.balance ?? 0} />
           <UserAccountNav

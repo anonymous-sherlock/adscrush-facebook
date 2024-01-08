@@ -1,15 +1,18 @@
+import { cn } from '@/lib/utils';
 import React from 'react';
 
 interface TitleSectionProps {
   title: string;
   subheading?: string;
   pill: string;
+  titleStyles?: string
 }
 
 const TitleSection: React.FC<TitleSectionProps> = ({
   title,
   subheading,
   pill,
+  titleStyles
 }) => {
   return (
     <React.Fragment>
@@ -43,13 +46,7 @@ const TitleSection: React.FC<TitleSectionProps> = ({
         {subheading ? (
           <>
             <h2
-              className="text-left
-              text-3xl
-              sm:text-5xl
-              sm:max-w-[750px]
-              md:text-center
-              font-semibold
-            "
+              className={cn("text-left text-3xl  sm:text-5xl sm:max-w-[750px] md:text-center font-semibold", titleStyles)}
             >
               {title}
             </h2>

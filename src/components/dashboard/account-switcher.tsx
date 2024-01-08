@@ -61,11 +61,11 @@ export default function AccountSwitcher({ className, onboarding }: TeamSwitcherP
           >
             <Avatar className="mr-2 h-5 w-5">
               <AvatarImage
-                src={`https://avatar.vercel.sh/${selectedTeam.value}.png`}
+                src={`https://avatar.vercel.sh/${group.accounts.id}.png`}
                 alt={selectedTeam.label}
-                className="grayscale"
+                className=""
               />
-              <AvatarFallback>SC</AvatarFallback>
+              <AvatarFallback>{selectedTeam.label.slice(0, 1)}</AvatarFallback>
             </Avatar>
             {selectedTeam.label}
             <CaretSortIcon className="ml-auto h-4 w-4 shrink-0 opacity-50" />
@@ -76,39 +76,39 @@ export default function AccountSwitcher({ className, onboarding }: TeamSwitcherP
             <CommandList>
               <CommandInput placeholder="Search account..." />
               <CommandEmpty>No account found.</CommandEmpty>
-           
-                <CommandGroup key={group.label} heading={group.label}>
-                 
-                    <Link href={`/accounts/${group.accounts.id}`} key={group.accounts.id} >
-                      <CommandItem
-                        value={group.accounts.id}
-                        onSelect={() => {
-                          setSelectedTeam(group.accounts)
-                          setOpen(false)
-                        }}
-                        className="text-sm"
-                      >
 
-                        <Avatar className="mr-2 h-5 w-5">
-                          <AvatarImage
-                            src={`https://avatar.vercel.sh/${group.accounts.id}.png`}
-                            alt={group.accounts.label}
-                            className=""
-                          />
-                          <AvatarFallback>SC</AvatarFallback>
-                        </Avatar>
-                        {group.accounts.label}
-                        <CheckIcon
-                          className={cn(
-                            "ml-auto h-4 w-4",
-                            selectedTeam.id === group.accounts.id
-                              ? "opacity-100"
-                              : "opacity-0"
-                          )}
-                        />
-                      </CommandItem>
-                    </Link>
-                </CommandGroup>
+              <CommandGroup key={group.label} heading={group.label}>
+
+                <Link href={`/accounts/${group.accounts.id}`} key={group.accounts.id} >
+                  <CommandItem
+                    value={group.accounts.id}
+                    onSelect={() => {
+                      setSelectedTeam(group.accounts)
+                      setOpen(false)
+                    }}
+                    className="text-sm"
+                  >
+
+                    <Avatar className="mr-2 h-5 w-5">
+                      <AvatarImage
+                        src={`https://avatar.vercel.sh/${group.accounts.id}.png`}
+                        alt={group.accounts.label}
+                        className=""
+                      />
+                      <AvatarFallback>{selectedTeam.label.slice(0, 1)}</AvatarFallback>
+                    </Avatar>
+                    {group.accounts.label}
+                    <CheckIcon
+                      className={cn(
+                        "ml-auto h-4 w-4",
+                        selectedTeam.id === group.accounts.id
+                          ? "opacity-100"
+                          : "opacity-0"
+                      )}
+                    />
+                  </CommandItem>
+                </Link>
+              </CommandGroup>
             </CommandList>
 
 

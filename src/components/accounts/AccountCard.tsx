@@ -1,3 +1,4 @@
+"use client"
 import { ONBOARDING_STATUS } from "@/constants/index";
 import { Avatar, Button, Card, CardBody, CardFooter, CardHeader, Divider } from "@nextui-org/react";
 import { Onboarding_Status } from "@prisma/client";
@@ -23,8 +24,6 @@ export const UserAccountCard = ({ createdAt, id, name, status, profileLink, user
   const profileUrl = new URL(profileLink)
   const profileID = profileUrl.searchParams.get("id")
   let avatarLocation = `https://graph.facebook.com/${"100075465566989"}/picture?width=640&height=640`
-
-  console.log("id", profileID)
 
   return (
     <Card shadow="none" className="hover:shadow-lg shadow transition">
@@ -52,7 +51,7 @@ export const UserAccountCard = ({ createdAt, id, name, status, profileLink, user
         </Button>
       </CardHeader>
       <CardBody className="px-3 py-0">
-        <p className="text-small pl-px text-default-500">
+        <div className="text-small pl-px text-default-500">
           <p>
             <b>Username</b>{" "}{username}
           </p>
@@ -60,7 +59,7 @@ export const UserAccountCard = ({ createdAt, id, name, status, profileLink, user
 
             <b>Profile Link</b><span>{" "}{profileLink}</span> <br />
           </p>
-        </p>
+        </div>
       </CardBody>
       <Divider className="mt-2" />
       <CardFooter className="flex items-center justify-between gap-3">
