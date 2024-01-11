@@ -10,6 +10,8 @@ import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 import { CalendarDateRangePicker } from './_components/date-range-picker'
 import { Overview } from './_components/overview'
+import { wrapTrpcCall } from '@/lib/utils'
+import { server } from '@/app/_trpc/server'
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -20,7 +22,7 @@ async function DashboardPage() {
   const user = await getCurrentUser()
   const isOnboarded = await getCurrentIsOnboarded()
   if (!user) redirect(authPages.login)
-  if (!isOnboarded) redirect(ONBOARDING_REDIRECT)
+  if (!isOnboarded && user.role !== "ADMIN") redirect(ONBOARDING_REDIRECT)
 
   const onboardedUser = await db.user.findFirst({
     where: { id: user.id },
@@ -31,6 +33,9 @@ async function DashboardPage() {
     return <AccountStatus status={onboardedUser.onboarding.status} />
   }
 
+  const payments = await wrapTrpcCall(() => server.payment.getAll({limit:5}))
+
+
   return (
     <>
       {/* main dashboard */}
@@ -38,8 +43,6 @@ async function DashboardPage() {
         <div className="flex items-center justify-between space-y-2">
           <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
           <div className="flex items-center space-x-2">
-            <CalendarDateRangePicker />
-            {/* <Button>Download</Button> */}
           </div>
         </div>
         <Tabs defaultValue="overview" className="space-y-4">
@@ -50,15 +53,6 @@ async function DashboardPage() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="overview" className="space-y-4">
-            {/* <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <Suspense fallback={<p>Loading feed...</p>}>
-                <OverviewInfoCard title="Total Revenue" subTitle='5500' type='price' icon="revenue" />
-              </Suspense>
-
-              <OverviewInfoCard title="Last Month Revenue" subTitle='5500' type='price' icon='user' />
-              <OverviewInfoCard title="Withdrawal" subTitle='5500' type='price' icon='withdrawal' />
-              <OverviewInfoCard title="Bonus /Day" icon='active' subTitle='5500' />
-            </div> */}
             <InfoCard />
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
               <Card className="col-span-4">
@@ -77,7 +71,7 @@ async function DashboardPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <RecentPayments />
+                  <RecentPayments payments={payments ?? []} />
                 </CardContent>
               </Card>
             </div>

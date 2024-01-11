@@ -18,12 +18,6 @@ export function MainNav({
         Overview
       </Link>
       <Link
-        href="/accounts"
-        className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-      >
-        Accounts
-      </Link>
-      <Link
         href="/wallet"
         className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
       >

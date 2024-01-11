@@ -5,11 +5,13 @@ import { userRouter } from "./routers/user.router";
 import { router } from "./trpc";
 import { dashboardRouter } from "./routers/dashboard.router";
 import { adminRouter } from "./routers/admin.router";
+import { paymentRouter } from "./routers/payment.router";
 
 export const appRouter = router({
   user: userRouter,
   onboarding: onboardingRouter,
   dashboard: dashboardRouter,
+  payment: paymentRouter,
   admin: adminRouter
 });
 

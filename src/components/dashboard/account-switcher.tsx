@@ -2,8 +2,7 @@
 
 import {
   CaretSortIcon,
-  CheckIcon,
-  PlusCircledIcon,
+  CheckIcon
 } from "@radix-ui/react-icons"
 import * as React from "react"
 
@@ -22,15 +21,13 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
-  CommandList,
-  CommandSeparator,
+  CommandList
 } from "@/ui/command"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/ui/popover"
-import { ONBOARDING_REDIRECT } from "@routes"
 import Link from "next/link"
 
 type Account = RouterOutputs["onboarding"]["getOnboardingName"]["accounts"];
@@ -38,7 +35,7 @@ type Account = RouterOutputs["onboarding"]["getOnboardingName"]["accounts"];
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>
 
 interface TeamSwitcherProps extends PopoverTriggerProps {
-  onboarding: RouterOutputs["onboarding"]["getOnboardingName"]
+  onboarding: RouterOutputs["onboarding"]["getOnboardingName"] 
 }
 
 export default function AccountSwitcher({ className, onboarding }: TeamSwitcherProps) {

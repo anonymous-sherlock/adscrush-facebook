@@ -28,6 +28,25 @@ export function formatPrice(
   }).format(numericPrice);
 }
 
+export function formatDate(
+  date: Date | string | number,
+  options: Intl.DateTimeFormatOptions = {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }
+) {
+  return new Intl.DateTimeFormat("en-IN", {
+    ...options,
+  }).format(new Date(date))
+}
+
+export function toSentenceCase(str: string) {
+  return str
+    .replace(/([A-Z])/g, " $1")
+    .replace(/^./, (str) => str.toUpperCase())
+}
+
 export function absoluteUrl(path: string) {
   if (typeof window !== "undefined") return path;
   if (env.NEXT_PUBLIC_VERCEL_URL) return `https://${env.NEXT_PUBLIC_VERCEL_URL}${path}`;

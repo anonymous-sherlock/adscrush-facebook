@@ -1,4 +1,5 @@
 import { env } from "@/env.mjs";
+import { TokensIcon } from "@radix-ui/react-icons";
 import { DEFAULT_LOGIN_REDIRECT, ONBOARDING_REDIRECT, apiAuthPrefix, apiPrefix, authRoutes, publicRoutes } from "@routes";
 import { withAuth } from "next-auth/middleware";
 
@@ -7,6 +8,7 @@ export default withAuth(
   function middleware(req) {
     const { nextUrl } = req;
     const isLoggedIn = !!req.nextauth.token;
+    const token = req.nextauth.token;
 
 
 
@@ -44,10 +46,14 @@ export default withAuth(
       ));
     }
 
-    if (!isOnboarded && !nextUrl.pathname.startsWith(ONBOARDING_REDIRECT) && !nextUrl.pathname.startsWith("/dashboard")) {
+    if (!isOnboarded && !nextUrl.pathname.startsWith(ONBOARDING_REDIRECT) && !nextUrl.pathname.startsWith("/dashboard") && token?.role !== "ADMIN") {
       if (!isPublicRoute && !isApiAuthRoute && !isAuthRoute && !isApiRoute) {
         return Response.redirect(new URL(ONBOARDING_REDIRECT, nextUrl));
       }
+    }
+
+    if (nextUrl.pathname === "/admin" && token?.role === "ADMIN") {
+      return Response.redirect(new URL("/admin/users", nextUrl));
     }
     return null;
   },

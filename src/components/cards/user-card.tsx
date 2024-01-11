@@ -22,8 +22,8 @@ export function UserCard({ user, href }: UserCardProps) {
 		<Link href={href}>
 			<span className="sr-only">{user.name}</span>
 			<Card className="h-full overflow-hidden transition-colors hover:bg-muted/50">
-				<AspectRatio ratio={21 / 9}>
-					<div className="absolute inset-0 bg-gradient-to-t from-transparent to-zinc-950/50" />
+				<AspectRatio ratio={16 / 5}>
+					<div className="absolute inset-0 bg-gradient-to-t from-black/5 to-zinc-950/60" />
 					<Badge
 						className={cn(
 							"pointer-events-none absolute right-2 top-2 rounded-sm px-2 py-0.5 font-semibold",
@@ -39,8 +39,8 @@ export function UserCard({ user, href }: UserCardProps) {
 						style={getRandomPatternStyle(String(user.id))}
 					/>
 				</AspectRatio>
-				<CardHeader className="space-y-2">
-					<CardTitle className="line-clamp-1">{user.name}</CardTitle>
+				<CardHeader className="p-4 space-y-2">
+					<CardTitle className="line-clamp-1 text-lg">{user.name}</CardTitle>
 					<CardDescription className="line-clamp-1">
 						Explore {user.name} acocount
 					</CardDescription>

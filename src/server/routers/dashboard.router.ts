@@ -10,6 +10,12 @@ const getDetailsOutput = z.object({
 	}),
 	bonus: z.object({
 		dailyLimit: z.number().nullish()
+	}),
+	totalRevenue: z.object({
+		amount: z.number().nullish()
+	}),
+	withdrawal: z.object({
+		amount: z.number().nullish()
 	})
 })
 
@@ -24,6 +30,14 @@ export const dashboardRouter = router({
 		const walletBalance = await db.wallet.findUnique({
 			where: {
 				userId: userId
+			},
+			include: {
+				payments: {
+					select: {
+						amount: true,
+						id: true
+					}
+				}
 			}
 		})
 
@@ -33,6 +47,12 @@ export const dashboardRouter = router({
 			},
 			bonus: {
 				dailyLimit: user?.dailyBonusLimit
+			},
+			totalRevenue: {
+				amount: (walletBalance?.payments.reduce((acc, payment) => acc + payment.amount, 0) ?? 0) + (walletBalance?.balance ?? 0)
+			},
+			withdrawal: {
+				amount: walletBalance?.payments.reduce((acc, payment) => acc + payment.amount, 0) ?? 0
 			}
 		}
 	})

@@ -9,13 +9,12 @@ import { ONBOARDING_REDIRECT } from '@routes'
 import { redirect } from 'next/navigation'
 import AccountSwitcher from './account-switcher'
 import { MainNav } from './main-nav'
-import { Search } from './search'
 
 async function DashboardHeader() {
   const user = await getCurrentUser()
 
   const onboardingName = await wrapTrpcCall(() => server.onboarding.getOnboardingName());
-  if (!onboardingName) redirect(ONBOARDING_REDIRECT)
+  if (!onboardingName && user?.role !== "ADMIN") redirect(ONBOARDING_REDIRECT)
 
 
   const wallet = await db.wallet.findFirst({ where: { user: { id: user?.id } } })
@@ -23,10 +22,12 @@ async function DashboardHeader() {
   return (
     <div className="border-b bg-white">
       <div className="flex h-16 items-center px-4">
-        <AccountSwitcher onboarding={onboardingName} />
+        {onboardingName ?
+          <AccountSwitcher onboarding={onboardingName} /> : null
+        }
         <MainNav className="mx-6" />
         <div className="ml-auto flex items-center space-x-4">
-          <Search />
+
 
           <WalletBalance balance={wallet?.balance ?? 0} />
           <UserAccountNav
