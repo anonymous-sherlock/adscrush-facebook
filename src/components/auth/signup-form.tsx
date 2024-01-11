@@ -1,7 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import * as React from "react"
 import { useForm } from "react-hook-form"
 import type { z } from "zod"
@@ -22,11 +22,15 @@ import { register } from "@/lib/actions/register"
 import { registerSchema } from "@/schema/auth.schema"
 import { FormError } from "../form-error"
 import { FormSuccess } from "../form-success"
+import { DEFAULT_LOGIN_REDIRECT } from "@routes"
+import { toast } from "sonner"
 
 type Inputs = z.infer<typeof registerSchema>
 
 export function SignUpForm() {
   const router = useRouter()
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
   const [error, setError] = React.useState<string | undefined>("");
   const [success, setSuccess] = React.useState<string | undefined>("");
   const [isPending, startTransition] = React.useTransition();
@@ -50,7 +54,16 @@ export function SignUpForm() {
       register(values)
         .then((data) => {
           setError(data.error);
+          if(data.error){
+            toast.error(data.error)
+          }
           setSuccess(data.success);
+          if(data.success){
+            toast.message("Account Created", {
+              description: "Redirecting to Login..."
+            })
+            router.push(callbackUrl ? callbackUrl : DEFAULT_LOGIN_REDIRECT)
+          }
         });
     });
   }
