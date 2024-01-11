@@ -58,7 +58,7 @@ enum UserRole {
 model Wallet {
   id       String    @id @default(cuid())
   balance  Float     @default(0)
-  user     User?     @relation(fields: [userId], references: [id])
+  user     User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId   String    @unique
   payments Payment[]
 
