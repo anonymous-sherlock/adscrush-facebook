@@ -17,23 +17,23 @@ const data = [
   },
   {
     name: "Apr",
-    total: 100,
+    total: 0,
   },
   {
     name: "May",
-    total: 500,
+    total: 0,
   },
   {
     name: "Jun",
-    total: 500,
+    total: 0,
   },
   {
     name: "Jul",
-    total: 10,
+    total: 0,
   },
   {
     name: "Aug",
-    total: 100,
+    total: 0,
   },
   {
     name: "Sep",

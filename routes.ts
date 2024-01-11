@@ -3,7 +3,11 @@
  * These routes do not require authentication
  * @type {string[]}
  */
-export const publicRoutes = ["/", "/sso-callback","/update-user"];
+export const publicRoutes = ["/",
+  "/sso-callback",
+  "/api/wallet/bonus",
+  "/api/wallet/create",
+];
 
 /**
  * An array of routes that are used for authentication

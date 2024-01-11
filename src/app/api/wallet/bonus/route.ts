@@ -27,11 +27,13 @@ async function updateWalletBalances() {
     console.log('Wallet balances updated successfully');
   } catch (error) {
     console.error('Error updating wallet balances:', error);
+    job.nextInvocation()
   }
 }
 
 // run cron job every day at 12:00 Am
 const job = scheduleJob('0 0 * * *', updateWalletBalances);
+
 
 export async function GET(req: NextRequest, res: NextResponse) {
   return NextResponse.json({ success: true })
