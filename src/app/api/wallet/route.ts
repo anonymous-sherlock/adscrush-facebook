@@ -46,7 +46,7 @@ async function updateWalletBalances() {
   }
 }
 
-const job = scheduleJob('*/1 * * * *', updateWalletBalances);
+// const job = scheduleJob('*/1 * * * *', updateWalletBalances);
 
 export async function GET(req: NextRequest, res: NextResponse) {
   return NextResponse.json({ success: true })

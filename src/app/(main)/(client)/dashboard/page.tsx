@@ -33,7 +33,8 @@ async function DashboardPage() {
     return <AccountStatus status={onboardedUser.onboarding.status} />
   }
 
-  const payments = await wrapTrpcCall(() => server.payment.getAll({limit:5}))
+  const payments = await wrapTrpcCall(() => server.payment.getAll({ limit: 5 }))
+  const paymentsCount = await wrapTrpcCall(() => server.payment.getTotalPaymentCount())
 
 
   return (
@@ -67,7 +68,7 @@ async function DashboardPage() {
                 <CardHeader>
                   <CardTitle>Recent Transaction</CardTitle>
                   <CardDescription>
-                    You made 50 transaction this month.
+                    You made {paymentsCount || 0} transaction total.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>

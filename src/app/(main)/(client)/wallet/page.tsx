@@ -20,6 +20,7 @@ async function WalletPage({ searchParams }: WalletPageProps) {
   const user = await getCurrentUser()
 
   const payments = await wrapTrpcCall(() => server.payment.getAll({ limit: undefined }))
+  const paymentsCount = await wrapTrpcCall(() => server.payment.getTotalPaymentCount())
 
 
 
@@ -38,7 +39,7 @@ async function WalletPage({ searchParams }: WalletPageProps) {
             <CardHeader>
               <CardTitle>Recent Transaction</CardTitle>
               <CardDescription>
-                You made {payments?.length ?? 0} transaction total.
+                You made {paymentsCount ?? 0} transaction total.
               </CardDescription>
             </CardHeader>
             <CardContent>

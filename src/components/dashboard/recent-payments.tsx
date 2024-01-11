@@ -22,12 +22,12 @@ export function RecentPayments({payments}:RecentPaymentsProps) {
   return (
     <>
       <Table>
-        <TableCaption>A list of your recent Wihtdrawls  .</TableCaption>
+        <TableCaption>A list of your recent withdrawal.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px] ">Transaction id</TableHead>
+            <TableHead className="w-[100px] ">Txn id</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Method</TableHead>
+            <TableHead>Type</TableHead>
             <TableHead className="text-right">Amount</TableHead>
           </TableRow>
         </TableHeader>

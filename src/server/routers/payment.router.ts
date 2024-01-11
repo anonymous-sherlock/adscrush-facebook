@@ -41,7 +41,7 @@ export const paymentRouter = router({
     }),
 
     getAll: privateProcedure.input(paymentQuerySchema).query(async ({ ctx, input }) => {
-        const { limit } = input
+        const { limit } = input;
         const payments = await db.payment.findMany({
             where: {
                 userId: ctx.userId
@@ -50,8 +50,13 @@ export const paymentRouter = router({
                 createdAt: "desc"
             },
             take: limit ? limit : undefined
-        })
-
+        });
         return payments
+    }),
+
+    getTotalPaymentCount: privateProcedure.query(async ({ ctx, input }) => {
+        const paymentsCount = await db.payment.count({ where: { userId: ctx.userId } })
+        return paymentsCount
     })
+
 })

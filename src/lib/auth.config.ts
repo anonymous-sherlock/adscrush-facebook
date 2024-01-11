@@ -96,6 +96,7 @@ export const authOptions: NextAuthOptions = {
       // Allow OAuth without email verification
       if (account?.provider !== "credentials") return true;
       const existingUser = await getUserById(user.id);
+
       // Prevent sign in without email verification
       if (!existingUser?.emailVerified) return false;
 
@@ -159,7 +160,7 @@ export const authOptions: NextAuthOptions = {
       })
     },
     async updateUser({ user }) {
-      console.log("update user:",user)
+      console.log("update user:", user)
     }
   },
   debug: env.NODE_ENV === "development" ? true : false,

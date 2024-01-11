@@ -25,6 +25,9 @@ export const userRouter = router({
       data: {
         email: email,
         password: hashPassword,
+        wallet: {
+          create: {}
+        }
       },
     });
 
