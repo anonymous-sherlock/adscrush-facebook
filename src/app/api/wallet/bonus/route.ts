@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { NextRequest, NextResponse } from "next/server";
-import { RecurrenceRule, scheduleJob } from "node-schedule";
+import { scheduleJob } from "node-schedule";
 
 async function updateWalletBalances() {
   try {
@@ -27,7 +27,6 @@ async function updateWalletBalances() {
     console.log('Wallet balances updated successfully');
   } catch (error) {
     console.error('Error updating wallet balances:', error);
-    job.nextInvocation()
   }
 }
 

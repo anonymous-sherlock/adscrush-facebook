@@ -56,11 +56,13 @@ enum UserRole {
 }
 
 model Wallet {
-  id       String    @id @default(cuid())
-  balance  Float     @default(0)
-  user     User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId   String    @unique
-  payments Payment[]
+  id        String    @id @default(cuid())
+  balance   Float     @default(0)
+  user      User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String    @unique
+  payments  Payment[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   @@map("wallet")
 }
