@@ -108,7 +108,7 @@ export async function addDetails(
       db.document.create({
         data: {
           name: input.alternateIdName,
-          documentType: 'PRIMARY',
+          documentType: 'ALTERNATE',
           userId: user.id,
           onboardingId: onboardingDetails.id,
           files: {
