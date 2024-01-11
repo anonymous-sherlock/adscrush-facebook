@@ -54,7 +54,7 @@ export function DataTable<TData, TValue>({
   const [globalFilter, setGlobalFilter] = React.useState("");
 
 
-  const { data: initialData } = trpc.payment.getAll.useQuery(undefined, {
+  const { data: initialData } = trpc.payment.getAll.useQuery({ limit: undefined }, {
     initialData: data as RouterOutputs["payment"]["getAll"],
     refetchOnMount: false,
     refetchOnReconnect: false,
