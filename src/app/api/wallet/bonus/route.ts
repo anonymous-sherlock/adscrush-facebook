@@ -60,7 +60,7 @@ function isAuthenticated(req: NextRequest) {
 }
 
 
-export async function handler(req: NextRequest, res: NextResponse) {
+async function handler(req: NextRequest, res: NextResponse) {
   try {
     if (!isAuthenticated(req)) {
       return new NextResponse('Authentication required', {
