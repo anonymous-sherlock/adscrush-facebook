@@ -56,14 +56,16 @@ enum UserRole {
 }
 
 model Wallet {
-  id        String    @id @default(cuid())
-  balance   Float     @default(0)
-  user      User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String    @unique
-  payments  Payment[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id           String    @id @default(cuid())
+  balance      Float     @default(0)
+  user         User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String    @unique
+  payments     Payment[]
+  bonusUpdated DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
+  @@index([userId], name: "idx_userId")
   @@map("wallet")
 }
 
@@ -79,11 +81,15 @@ model Payment {
   walletId  String
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
+
+  @@index([userId], name: "idx_userId")
+  @@index([walletId], name: "idx_walletId")
 }
 
 enum Payment_Type {
   Deposit
   Withdraw
+  Bonus
 }
 
 enum Payment_Status {
