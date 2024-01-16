@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { type ClassValue, clsx } from "clsx"
 import { env } from "process";
 import { toast } from "sonner";
@@ -76,7 +77,10 @@ export function catchError(err: unknown) {
     return toast(errors.join("\n"))
   } else if (err instanceof Error) {
     return toast(err.message)
-  } else {
+  } else if (err instanceof TRPCError) {
+    return toast(err.message)
+  }
+  else {
     return toast("Something went wrong, please try again later.")
   }
 }

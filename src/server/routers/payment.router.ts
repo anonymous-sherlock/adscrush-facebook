@@ -57,6 +57,7 @@ export const paymentRouter = router({
     getTotalPaymentCount: privateProcedure.query(async ({ ctx, input }) => {
         const paymentsCount = await db.payment.count({ where: { userId: ctx.userId } })
         return paymentsCount
-    })
+    }),
+
 
 })

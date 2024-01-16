@@ -10,7 +10,7 @@ async function updateWalletBalances() {
         onboarding: { status: "Verified" },
         OR: [
           { wallet: { bonusUpdated: null } },
-          { wallet: { bonusUpdated: { lte: new Date(Date.now() - DEFAULT_BONUS_UPDATE_TIME) } } }
+          { wallet: { bonusUpdated: { lte: new Date(Date.now() - 60 * 1000) } } }
         ]
       }, include: { wallet: true }
     });
@@ -27,6 +27,7 @@ async function updateWalletBalances() {
         },
       },
       data: {
+        
         balance: {
           increment: users.map((user) => user.dailyBonusLimit || 50).reduce((acc, limit) => acc + limit, 0),
         },

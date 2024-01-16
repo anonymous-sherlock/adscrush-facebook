@@ -1,15 +1,13 @@
+import { server } from '@/app/_trpc/server'
 import { InfoCard } from '@/components/dashboard/info-card'
-import { RecentPayments } from '@/components/dashboard/recent-payments'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { PayoutForm } from '@/components/wallet/payout-form'
 import { getCurrentUser } from '@/lib/auth'
-import { SearchParams } from '@/types'
-import { Payment } from '@prisma/client'
-import React from 'react'
-import { DataTable } from './_table/data-table'
-import { columns } from './_table/columns'
 import { wrapTrpcCall } from '@/lib/utils'
-import { server } from '@/app/_trpc/server'
+import { SearchParams } from '@/types'
+import React from 'react'
+import { columns } from './_table/columns'
+import { DataTable } from './_table/data-table'
 
 interface WalletPageProps {
   searchParams: SearchParams

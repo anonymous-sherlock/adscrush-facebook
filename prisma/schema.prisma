@@ -1,7 +1,8 @@
 // prisma/schema.prisma
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 generator client {
@@ -30,24 +31,50 @@ model Account {
 }
 
 model User {
-  id              String      @id @default(cuid())
+  id              String         @id @default(cuid())
   name            String?
-  email           String?     @unique
+  email           String?        @unique
   emailVerified   DateTime?
   image           String?
   password        String?
   isOnboarded     DateTime?
-  role            UserRole    @default(USER)
+  role            UserRole       @default(USER)
   accounts        Account[]
   onboarding      Onboarding?
   documents       Document[]
   payments        Payment[]
   wallet          Wallet?
-  dailyBonusLimit Int         @default(50)
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  dailyBonusLimit Int            @default(50)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  userPrefrence   UserPrefrence?
 
   @@fulltext([name])
+}
+
+model UserPrefrence {
+  id            String              @id @default(cuid())
+  paymentMethod UserPaymentMethod[]
+  user          User?               @relation(fields: [userId], references: [id])
+  userId        String?             @unique
+}
+
+enum Payment_Method_Type {
+  UPI
+  NETBANKING
+}
+
+model UserPaymentMethod {
+  id              String              @id @default(cuid())
+  methodType      Payment_Method_Type
+  details         Json
+  primary         Boolean             @default(false)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  UserPrefrence   UserPrefrence?      @relation(fields: [userPrefrenceId], references: [id])
+  userPrefrenceId String?
+
+  @@map("user_payment_methods")
 }
 
 enum UserRole {
@@ -70,17 +97,18 @@ model Wallet {
 }
 
 model Payment {
-  id        String         @id @default(cuid())
+  id        String              @id @default(cuid())
   amount    Float
-  type      Payment_Type   @default(Withdraw)
-  status    Payment_Status @default(PENDING)
-  txid      String         @unique @default(uuid())
-  user      User?          @relation(fields: [userId], references: [id])
+  type      Payment_Type        @default(Withdraw)
+  status    Payment_Status      @default(PENDING)
+  txid      String              @unique @default(uuid())
+  user      User?               @relation(fields: [userId], references: [id])
   userId    String?
-  wallet    Wallet         @relation(fields: [walletId], references: [id])
+  wallet    Wallet              @relation(fields: [walletId], references: [id])
   walletId  String
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
+  payoutTo  Payment_Method_Type?
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
 
   @@index([userId], name: "idx_userId")
   @@index([walletId], name: "idx_walletId")
