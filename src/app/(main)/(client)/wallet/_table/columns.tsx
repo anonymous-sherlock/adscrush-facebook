@@ -4,17 +4,21 @@ import { ColumnDef } from "@tanstack/react-table";
 
 import { Checkbox } from "@/ui/checkbox";
 
-import { Payment, Payment_Status } from "@prisma/client";
+import { Payment, Payment_Status, UserPaymentMethod } from "@prisma/client";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
 import { formatDate, formatPrice } from "@/lib/utils";
 import { PAYMENT_STATUS } from "@/constants/index";
 import { cn } from "@/lib/utils";
 import { CustomBadge } from "@/components/CustomBadge";
+import { RouterOutputs } from "@/server";
 export type PaymentsList = Pick<
   Payment,
   "id" | "txid" | "status" | "amount" | "createdAt" | "type"
->
+> & {
+  userPayoutMethod: RouterOutputs["payment"]["getAll"][number]["userPayoutMethod"]
+}
+
 
 export const columns: ColumnDef<PaymentsList>[] = [
   {
@@ -77,6 +81,26 @@ export const columns: ColumnDef<PaymentsList>[] = [
     },
   },
   {
+    accessorKey: "userPayoutMethod",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Payout To" />
+    ),
+    cell: ({ row }) => {
+      return (
+        <div className="flex space-x-2 max-w-[220px] truncate">
+          <span className="w-full truncate font-medium ">
+            {
+              row.original?.userPayoutMethod?.details && (typeof row.original.userPayoutMethod.details === 'object') && ('upiId' in row.original.userPayoutMethod.details && typeof row.original.userPayoutMethod.details.upiId == "string") ? (
+                row.original.userPayoutMethod.details.upiId
+              ) : "Payment method Deleted."
+            }
+          </span>
+        </div>
+      );
+    },
+    enableSorting: false,
+  },
+  {
     accessorKey: "type",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Type" />
@@ -86,8 +110,8 @@ export const columns: ColumnDef<PaymentsList>[] = [
         <div className="flex space-x-2 max-w-[220px] ">
           <span className="w-full truncate font-medium ">
             {
-            
-            row.original.type}
+
+              row.original.type}
           </span>
         </div>
       );

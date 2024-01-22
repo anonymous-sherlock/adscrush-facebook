@@ -17,8 +17,10 @@ async function WalletPage({ searchParams }: WalletPageProps) {
 
   const user = await getCurrentUser()
 
-  const payments = await wrapTrpcCall(() => server.payment.getAll({ limit: undefined }))
-  const paymentsCount = await wrapTrpcCall(() => server.payment.getTotalPaymentCount())
+  const [payments, paymentsCount] = await Promise.all([
+    await wrapTrpcCall(() => server.payment.getAll({ limit: undefined })),
+    await wrapTrpcCall(() => server.payment.getTotalPaymentCount())
+  ])
 
 
 

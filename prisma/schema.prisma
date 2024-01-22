@@ -67,13 +67,15 @@ enum Payment_Method_Type {
 model UserPaymentMethod {
   id              String              @id @default(cuid())
   methodType      Payment_Method_Type
-  details         Json
+  details         Json                @unique
   primary         Boolean             @default(false)
   createdAt       DateTime            @default(now())
   updatedAt       DateTime            @updatedAt
-  UserPrefrence   UserPrefrence?      @relation(fields: [userPrefrenceId], references: [id])
-  userPrefrenceId String?
+  UserPrefrence   UserPrefrence       @relation(fields: [userPrefrenceId], references: [id], onDelete: Cascade)
+  userPrefrenceId String
+  Payment         Payment[]
 
+  @@unique([methodType, primary, details])
   @@map("user_payment_methods")
 }
 
@@ -97,18 +99,19 @@ model Wallet {
 }
 
 model Payment {
-  id        String              @id @default(cuid())
-  amount    Float
-  type      Payment_Type        @default(Withdraw)
-  status    Payment_Status      @default(PENDING)
-  txid      String              @unique @default(uuid())
-  user      User?               @relation(fields: [userId], references: [id])
-  userId    String?
-  wallet    Wallet              @relation(fields: [walletId], references: [id])
-  walletId  String
-  payoutTo  Payment_Method_Type?
-  createdAt DateTime            @default(now())
-  updatedAt DateTime            @updatedAt
+  id               String             @id @default(cuid())
+  amount           Float
+  type             Payment_Type       @default(Withdraw)
+  status           Payment_Status     @default(PENDING)
+  txid             String             @unique @default(uuid())
+  user             User?              @relation(fields: [userId], references: [id])
+  userId           String?
+  wallet           Wallet             @relation(fields: [walletId], references: [id])
+  walletId         String
+  userPayoutMethod UserPaymentMethod? @relation(fields: [payoutId], references: [id], onDelete: SetNull)
+  payoutId         String?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
 
   @@index([userId], name: "idx_userId")
   @@index([walletId], name: "idx_walletId")

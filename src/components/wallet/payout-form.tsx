@@ -18,11 +18,10 @@ import { trpc } from "@/app/_trpc/client"
 import { toast } from "sonner"
 import { Icons } from "../Icons"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { FormSuccess } from "../form-success"
 import { FormError } from "../form-error"
-import { checkPaymentMethod } from "@/lib/actions/payment"
-import { Payment_Method_Type } from "@prisma/client"
+import { checkPaymentMethod, getUserPayoutDetails } from "@/lib/actions/payment"
 import { z } from "zod"
 
 interface PayoutFormProps {
@@ -32,7 +31,7 @@ interface PayoutFormProps {
 export function PayoutForm({ className }: PayoutFormProps) {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
-
+  const [data, setData] = useState<Awaited<ReturnType<typeof getUserPayoutDetails>>>();
 
   const [isPending, startTransition] = React.useTransition()
 
@@ -51,6 +50,18 @@ export function PayoutForm({ className }: PayoutFormProps) {
     }
   })
 
+
+  useEffect(() => {
+
+    (async () => {
+
+      await getUserPayoutDetails().then((data) => {
+        if (data) setData(data)
+      })
+    })()
+  }, [])
+
+
   async function onSubmit(values: z.infer<typeof payoutFormSchema>) {
     console.log(values)
     startTransition(async () => {
@@ -59,8 +70,8 @@ export function PayoutForm({ className }: PayoutFormProps) {
         setError(data?.error);
 
         if (!data?.error) {
-          // requestPayment(values)
-          setSuccess(data.success);
+          requestPayment(values)
+          // setSuccess(data.success);
         }
       } catch (err) {
         catchError(err);
@@ -94,9 +105,17 @@ export function PayoutForm({ className }: PayoutFormProps) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent >
-                      {Object.keys(Payment_Method_Type).map((paymentType) => (
-                        <SelectItem value={paymentType} key={paymentType}>{paymentType}</SelectItem>
-                      ))
+                      {
+                        data && data.map((paymentMethod) => (
+                          <SelectItem value={paymentMethod.id} key={paymentMethod.id}>
+                            {
+                              paymentMethod.details && typeof paymentMethod.details === "object" && ("upiId" in paymentMethod.details && typeof paymentMethod.details.upiId === "string") && (
+                                paymentMethod.details.upiId
+                              )
+                            }
+
+                          </SelectItem>
+                        ))
                       }
                     </SelectContent>
                   </Select>
