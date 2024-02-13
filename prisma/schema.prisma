@@ -55,6 +55,11 @@ model User {
 model UserPrefrence {
   id            String              @id @default(cuid())
   paymentMethod UserPaymentMethod[]
+  skype         String?
+  phone         String?
+  telegram      String?
+  whatsapp      String?
+  facebook      String?
   user          User?               @relation(fields: [userId], references: [id])
   userId        String?             @unique
 }

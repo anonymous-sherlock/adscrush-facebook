@@ -54,3 +54,8 @@ export const apiPrefix = "/api";
  * @type {string}
  */
 export const DEFAULT_LOGIN_REDIRECT = "/dashboard";
+/**
+ * The default redirect path for dashboard page
+ * @type {string}
+ */
+export const DEFAULT_DASHBOARD_REDIRECT = "/dashboard";

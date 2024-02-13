@@ -10,16 +10,15 @@ import {
   PageHeaderDescription,
   PageHeaderHeading,
 } from "@/components/page-header"
+import { SearchInput } from "@/components/search-input"
 import { Shell } from "@/components/shell"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { getCurrentUser } from "@/lib/auth"
-import { authPages } from "@routes"
-import { cn, wrapTrpcCall } from "@/lib/utils"
-import { server } from "@/app/_trpc/server"
-import { SearchInput } from "@/components/search-input"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { db } from "@/db"
+import { getCurrentUser } from "@/lib/auth"
+import { cn } from "@/lib/utils"
 import { UserFilterValues } from "@/schema/filter.schema"
+import { authPages } from "@routes"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),

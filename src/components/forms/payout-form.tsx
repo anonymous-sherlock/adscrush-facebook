@@ -1,5 +1,5 @@
 "use client"
-import { PayoutFormType, payoutFormSchema } from "@/schema/payment.schema"
+import { PayoutFormType, paymentMethodDetails, payoutFormSchema } from "@/schema/payment.schema"
 import { Button } from "@/ui/button"
 import {
   Card,
@@ -13,7 +13,7 @@ import { Input } from "@/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
-import { catchError, cn } from "@/lib/utils"
+import { catchError, cn, formatAccountNumber } from "@/lib/utils"
 import { trpc } from "@/app/_trpc/client"
 import { toast } from "sonner"
 import { Icons } from "../Icons"
@@ -23,6 +23,7 @@ import { FormSuccess } from "../form-success"
 import { FormError } from "../form-error"
 import { checkPaymentMethod, getUserPayoutDetails } from "@/lib/actions/payment"
 import { z } from "zod"
+import { Avatar } from "@nextui-org/react"
 
 interface PayoutFormProps {
   className?: string
@@ -54,8 +55,8 @@ export function PayoutForm({ className }: PayoutFormProps) {
   useEffect(() => {
 
     (async () => {
-
       await getUserPayoutDetails().then((data) => {
+        if (!data || data.length === 0) setError("Payment method not added.")
         if (data) setData(data)
       })
     })()
@@ -100,7 +101,7 @@ export function PayoutForm({ className }: PayoutFormProps) {
                   <FormLabel>Payment Method</FormLabel>
                   <Select onValueChange={field.onChange}>
                     <FormControl>
-                      <SelectTrigger >
+                      <SelectTrigger disabled={data?.length === 0}>
                         <SelectValue placeholder="Select a payment method" />
                       </SelectTrigger>
                     </FormControl>
@@ -108,12 +109,7 @@ export function PayoutForm({ className }: PayoutFormProps) {
                       {
                         data && data.map((paymentMethod) => (
                           <SelectItem value={paymentMethod.id} key={paymentMethod.id}>
-                            {
-                              paymentMethod.details && typeof paymentMethod.details === "object" && ("upiId" in paymentMethod.details && typeof paymentMethod.details.upiId === "string") && (
-                                paymentMethod.details.upiId
-                              )
-                            }
-
+                            {RenderPayoutMethod({ paymentMethod })}
                           </SelectItem>
                         ))
                       }
@@ -157,4 +153,41 @@ export function PayoutForm({ className }: PayoutFormProps) {
       </form>
     </Form >
   )
+}
+
+
+function RenderPayoutMethod({ paymentMethod }: { paymentMethod: any }) {
+  const parsedPaymentMethod = paymentMethodDetails.safeParse(paymentMethod);
+  if (!parsedPaymentMethod.success) return null
+  if ("upiId" in parsedPaymentMethod.data.details) {
+    return (
+    <div  className="flex items-center gap-2">
+      <Avatar
+        alt="Upi Id"
+        className="flex-shrink-0 w-7 h-7"
+        size="sm"
+        src={`https://avatar.vercel.sh/a1b23456789.png`}
+      />
+      <div className="flex flex-col items-start">
+        <span>Upi Id</span>
+        <span className="text-default-500 text-tiny">({parsedPaymentMethod.data.details.upiId})</span>
+      </div>
+    </div>
+    )
+  } else {
+    return (
+      <div  className="flex items-center gap-2">
+      <Avatar
+        alt="Upi Id"
+        className="flex-shrink-0 w-7 h-7"
+        size="sm"
+        src={`https://avatar.vercel.sh/a1b23456789.png`}
+      />
+      <div className="flex flex-col items-start">
+        <span>{parsedPaymentMethod.data.details.accountHolderName}</span>
+        <span className="text-default-500 text-tiny">{parsedPaymentMethod.data.details.bankName} - {formatAccountNumber(parsedPaymentMethod.data.details.accountNumber)}</span>
+      </div>
+    </div>
+    )
+  }
 }

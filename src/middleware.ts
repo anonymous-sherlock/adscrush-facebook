@@ -10,15 +10,12 @@ export default withAuth(
     const isLoggedIn = !!req.nextauth.token;
     const token = req.nextauth.token;
 
-
-
-    const isOnboarded = req.nextauth.token?.isOnboarded
+    const isOnboarded = req.nextauth.token?.isOnboarded;
 
     const isApiRoute = nextUrl.pathname.startsWith(apiPrefix);
     const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
-
 
     // console.log("tokken in : ", nextUrl.pathname, req.nextauth.token)
     if (isApiAuthRoute) {
@@ -40,10 +37,7 @@ export default withAuth(
 
       const encodedCallbackUrl = encodeURIComponent(callbackUrl);
 
-      return Response.redirect(new URL(
-        `/sign-in?callbackUrl=${encodedCallbackUrl}`,
-        nextUrl
-      ));
+      return Response.redirect(new URL(`/sign-in?callbackUrl=${encodedCallbackUrl}`, nextUrl));
     }
 
     if (!isOnboarded && !nextUrl.pathname.startsWith(ONBOARDING_REDIRECT) && !nextUrl.pathname.startsWith("/dashboard") && token?.role !== "ADMIN") {
@@ -52,19 +46,16 @@ export default withAuth(
       }
     }
 
+    // redirect user if visited admin route with admin user role.
     if (nextUrl.pathname === "/admin" && token?.role === "ADMIN") {
       return Response.redirect(new URL("/admin/users", nextUrl));
     }
-    return null;
   },
   {
     callbacks: {
       authorized: ({ req, token }) => {
         const pathname = req.nextUrl.pathname;
-        const protectedRoutes = [
-          ONBOARDING_REDIRECT,
-          "/dashboard",
-        ];
+        const protectedRoutes = [ONBOARDING_REDIRECT, "/dashboard"];
         if (!!token === false && protectedRoutes.includes(pathname)) {
           return false;
         }
@@ -76,8 +67,8 @@ export default withAuth(
       signIn: "/sign-in",
     },
     secret: env.NEXTAUTH_SECRET,
-  }
+  },
 );
 export const config = {
-  matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api|trpc)(.*)'],
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
 };

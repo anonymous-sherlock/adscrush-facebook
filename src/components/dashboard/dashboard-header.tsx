@@ -4,7 +4,7 @@ import UserAccountNav from '@/components/UserAccountNav'
 import { WalletBalance } from '@/components/wallet/WalletBallance'
 import { db } from '@/db'
 import { getCurrentUser } from '@/lib/auth'
-import { wrapTrpcCall } from '@/lib/utils'
+import { wrapServerCall } from '@/lib/utils'
 import { ONBOARDING_REDIRECT } from '@routes'
 import { redirect } from 'next/navigation'
 import AccountSwitcher from './account-switcher'
@@ -13,7 +13,7 @@ import { MainNav } from './main-nav'
 async function DashboardHeader() {
   const user = await getCurrentUser()
 
-  const onboardingName = await wrapTrpcCall(() => server.onboarding.getOnboardingName());
+  const onboardingName = await wrapServerCall(() => server.onboarding.getOnboardingName());
   if (!onboardingName && user?.role !== "ADMIN") redirect(ONBOARDING_REDIRECT)
 
 

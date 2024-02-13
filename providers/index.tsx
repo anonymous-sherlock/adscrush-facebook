@@ -8,7 +8,6 @@ import { httpBatchLink, loggerLink } from "@trpc/client";
 import { SessionProvider } from "next-auth/react";
 import { FC, ReactNode, useState } from "react";
 import superjson from "superjson";
-import { NextUIProvider } from '@nextui-org/react'
 
 interface LayoutProps {
   children: ReactNode;
@@ -19,7 +18,7 @@ const Providers: FC<LayoutProps> = ({ children }) => {
   const [trpcClient] = useState(() =>
     trpc.createClient({
       transformer: superjson,
-      links: [
+      links: [ 
         loggerLink({
           enabled: (opts) =>
             env.NEXT_PUBLIC_NODE_ENV === "development" ||

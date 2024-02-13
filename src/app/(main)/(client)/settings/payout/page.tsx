@@ -12,6 +12,7 @@ import { AddUpiForm } from '@/components/forms/add-upi-form'
 import { PaymentMethodsCard } from '@/components/cards/payment-methods-card'
 import { db } from '@/db'
 import { getCurrentUser } from '@/lib/auth'
+import { AddNetbankingForm } from '@/components/forms/add-netbanking-form'
 
 
 async function PayoutPage() {
@@ -42,7 +43,12 @@ async function PayoutPage() {
           <AccordionItem value="NETBANKING" className='bg-white p-4 border'>
             <AccordionTrigger>NETBANKING</AccordionTrigger>
             <AccordionContent>
-              Netbanking Support Coming Soon.
+              <div className='grid grid-cols-2 gap-3'>
+                {paymentMethods.filter((pay) => pay.methodType === "NETBANKING").map((payment) => {
+                  return <PaymentMethodsCard paymentMethod={payment} key={payment.id} />
+                })}
+              </div>
+              <AddNetbankingForm className='justify-end mt-4 ml-auto' />
             </AccordionContent>
           </AccordionItem>
         </Accordion>

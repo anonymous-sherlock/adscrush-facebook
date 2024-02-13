@@ -1,7 +1,14 @@
 "use client"
+import { trpc } from '@/app/_trpc/client';
+import {
+    Dialog,
+    DialogContent,
+    DialogTrigger
+} from "@/components/ui/dialog";
 import { cn } from '@/lib/utils';
 import { UpiFormType, upiFormSchema } from '@/schema/payment.schema';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Icons } from '../Icons';
@@ -9,20 +16,9 @@ import { FormError } from '../form-error';
 import { FormSuccess } from '../form-success';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../ui/card';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
-import { Input } from '../ui/input';
-import { trpc } from '@/app/_trpc/client';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
-import { useRouter } from 'next/navigation';
 import { Checkbox } from '../ui/checkbox';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
+import { Input } from '../ui/input';
 
 interface AddUpiFormProps {
     className?: string
@@ -40,7 +36,7 @@ export function AddUpiForm({ className }: AddUpiFormProps) {
             upiId: "",
         },
     })
-    const { mutate: addUPI, isLoading } = trpc.payment.addUPI.useMutation({
+    const { mutate: addUPI, isLoading } = trpc.payment.addPaymentMethod.useMutation({
         onMutate() {
             setSuccess("")
             setError("")
@@ -72,7 +68,7 @@ export function AddUpiForm({ className }: AddUpiFormProps) {
                     <form onSubmit={form.handleSubmit(onSubmit)} className={cn("shrink-0")}>
                         <Card className="w-full border-none shadow-none">
                             <CardHeader>
-                                <CardTitle className='text-2xl'>Add UPI Payment</CardTitle>
+                                <CardTitle className='text-xl'>Add UPI Payment</CardTitle>
                                 <CardDescription>
                                     Add a UPI payment method for payout.
                                 </CardDescription>

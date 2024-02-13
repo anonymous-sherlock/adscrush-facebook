@@ -2,7 +2,7 @@
 
 import { db } from "@/db";
 import {
-  paymentMethodsDetails,
+  paymentMethodDetails,
   payoutFormSchema,
 } from "@/schema/payment.schema";
 import { revalidatePath } from "next/cache";
@@ -136,7 +136,7 @@ export async function getUserPayoutDetails() {
     },
   });
 
-  const parsedData = z.array(paymentMethodsDetails).safeParse(payoutMethods);
+  const parsedData = z.array(paymentMethodDetails).safeParse(payoutMethods);
 
   if (!parsedData.success) {
     return null;

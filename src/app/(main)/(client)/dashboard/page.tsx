@@ -1,50 +1,51 @@
-import { AccountStatus } from '@/components/AccountStatus'
-import { InfoCard } from '@/components/dashboard/info-card'
-import { RecentPayments } from '@/components/dashboard/recent-payments'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { db } from '@/db'
-import { getCurrentIsOnboarded, getCurrentUser } from '@/lib/auth'
-import { ONBOARDING_REDIRECT, authPages } from '@routes'
-import { Metadata } from 'next'
-import { redirect } from 'next/navigation'
-import { CalendarDateRangePicker } from './_components/date-range-picker'
-import { Overview } from './_components/overview'
-import { wrapTrpcCall } from '@/lib/utils'
-import { server } from '@/app/_trpc/server'
+import { AccountStatus } from "@/components/AccountStatus";
+import { InfoCard } from "@/components/dashboard/info-card";
+import { RecentPayments } from "@/components/dashboard/recent-payments";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { db } from "@/db";
+import { getCurrentIsOnboarded, getCurrentUser } from "@/lib/auth";
+import { ONBOARDING_REDIRECT, authPages } from "@routes";
+import { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { CalendarDateRangePicker } from "./_components/date-range-picker";
+import { Overview } from "./_components/overview";
+import { wrapServerCall } from "@/lib/utils";
+import { server } from "@/app/_trpc/server";
+import { PageHeader, PageHeaderDescription, PageHeaderHeading } from "@/components/page-header";
 
 export const metadata: Metadata = {
   title: "Dashboard",
   description: "Adscrush Dashboard Rent your account.",
-}
+};
 
 async function DashboardPage() {
-  const user = await getCurrentUser()
-  const isOnboarded = await getCurrentIsOnboarded()
-  if (!user) redirect(authPages.login)
-  if (!isOnboarded && user.role !== "ADMIN") redirect(ONBOARDING_REDIRECT)
+  const user = await getCurrentUser();
+  const isOnboarded = await getCurrentIsOnboarded();
+  if (!user) redirect(authPages.login);
+  if (!isOnboarded && user.role !== "ADMIN") redirect(ONBOARDING_REDIRECT);
 
   const onboardedUser = await db.user.findFirst({
     where: { id: user.id },
-    select: { isOnboarded: true, onboarding: true }
-  })
+    select: { isOnboarded: true, onboarding: true },
+  });
 
   if (onboardedUser && onboardedUser.onboarding && onboardedUser.onboarding.status !== "Verified") {
-    return <AccountStatus status={onboardedUser.onboarding.status} />
+    return <AccountStatus status={onboardedUser.onboarding.status} />;
   }
 
-  const payments = await wrapTrpcCall(() => server.payment.getAll({ limit: 5 }))
-  const paymentsCount = await wrapTrpcCall(() => server.payment.getTotalPaymentCount())
-
+  const payments = await wrapServerCall(() => server.payment.getAll({ limit: 5 }));
+  const paymentsCount = await wrapServerCall(() => server.payment.getTotalPaymentCount());
 
   return (
     <>
       {/* main dashboard */}
       <div className="flex-1 space-y-4 p-8 pt-6">
         <div className="flex items-center justify-between space-y-2">
-          <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-          <div className="flex items-center space-x-2">
-          </div>
+          <PageHeader className="flex-1">
+            <PageHeaderHeading size="sm">Dashboard</PageHeaderHeading>
+            <PageHeaderDescription size="sm">View your account activity.</PageHeaderDescription>
+          </PageHeader>
         </div>
         <Tabs defaultValue="overview" className="space-y-4">
           <TabsList>
@@ -67,9 +68,7 @@ async function DashboardPage() {
               <Card className="col-span-3">
                 <CardHeader>
                   <CardTitle>Recent Transaction</CardTitle>
-                  <CardDescription>
-                    You made {paymentsCount || 0} transaction total.
-                  </CardDescription>
+                  <CardDescription>You made {paymentsCount || 0} transaction total.</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <RecentPayments payments={payments ?? []} />
@@ -79,9 +78,8 @@ async function DashboardPage() {
           </TabsContent>
         </Tabs>
       </div>
-
     </>
-  )
+  );
 }
 
-export default DashboardPage
+export default DashboardPage;

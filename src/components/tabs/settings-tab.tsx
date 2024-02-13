@@ -17,11 +17,11 @@ export function SettingsTabs({ }: SettingsTabsProps) {
     const segment = useSelectedLayoutSegment()
 
     const tabs = [
-        // {
-        //     title: "General",
-        //     href: `/settings`,
-        //     isActive: segment === null,
-        // },
+        {
+            title: "General",
+            href: `/settings`,
+            isActive: segment === null,
+        },
         {
             title: "Payout Methods",
             href: `/settings/payout`,

@@ -1,13 +1,15 @@
 import { server } from '@/app/_trpc/server'
 import { InfoCard } from '@/components/dashboard/info-card'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { PayoutForm } from '@/components/wallet/payout-form'
+import { PayoutForm } from '@/components/forms/payout-form'
 import { getCurrentUser } from '@/lib/auth'
-import { wrapTrpcCall } from '@/lib/utils'
+import { wrapServerCall } from '@/lib/utils'
 import { SearchParams } from '@/types'
 import React from 'react'
 import { columns } from './_table/columns'
 import { DataTable } from './_table/data-table'
+
+export const revalidate = 0;
 
 interface WalletPageProps {
   searchParams: SearchParams
@@ -18,8 +20,8 @@ async function WalletPage({ searchParams }: WalletPageProps) {
   const user = await getCurrentUser()
 
   const [payments, paymentsCount] = await Promise.all([
-    await wrapTrpcCall(() => server.payment.getAll({ limit: undefined })),
-    await wrapTrpcCall(() => server.payment.getTotalPaymentCount())
+    await wrapServerCall(() => server.payment.getAll({ limit: undefined })),
+    await wrapServerCall(() => server.payment.getTotalPaymentCount())
   ])
 
 
