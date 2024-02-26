@@ -1,6 +1,6 @@
 import { Onboarding_Status, Payment_Status } from "@prisma/client";
 import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
-import { CircleIcon } from "lucide-react";
+import { CircleIcon, Network, User } from "lucide-react";
 
 export const DOCUMENT_OPTIONS: string[] = [
   "Voter ID",
@@ -16,10 +16,10 @@ export const DOCUMENT_OPTIONS: string[] = [
 
 export const maxUploadFileSize = 8 * 1024 * 1024; // Assuming max size is 8MB
 
-
+type BonusType = "Bonus" | "Referral";
 export type StatusType = {
   label: string;
-  value: Onboarding_Status | Payment_Status
+  value: Onboarding_Status | Payment_Status | BonusType
   icon?: React.ComponentType<{ className?: string }>;
   color?: {
     textColor: string;
@@ -67,7 +67,6 @@ export const ONBOARDING_STATUS: OnboardingStatusProps[] = [
   },
 ];
 
-
 export type PaymentStatusProps = StatusType & {
   value: Payment_Status;
 }
@@ -111,6 +110,32 @@ export const PAYMENT_STATUS: PaymentStatusProps[] = [
       textColor: "text-red-700",
       bgColor: "!bg-red-50",
       ringColor: "ring-red-600/20",
+    },
+  },
+];
+
+export type BonusTypeProps = StatusType & {
+  value: "Bonus" | "Referral";
+}
+export const BONUS_TYPE: BonusTypeProps[] = [
+  {
+    value: "Bonus",
+    label: "Bonus",
+    icon: User,
+    color: {
+      textColor: "text-green-700",
+      bgColor: "!bg-green-50",
+      ringColor: "ring-green-600/20",
+    },
+  },
+  {
+    value: "Referral",
+    label: "Referral",
+    icon: Network,
+    color: {
+      textColor: "text-green-700",
+      bgColor: "!bg-green-50",
+      ringColor: "ring-green-600/20",
     },
   },
 ];

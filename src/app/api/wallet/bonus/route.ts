@@ -1,5 +1,7 @@
 import { DEFAULT_BONUS_UPDATE_TIME } from "@/constants/bonus";
 import { db } from "@/db";
+import { isAuthenticated } from "@/lib/helpers/authentication";
+import { startOfDay } from "date-fns";
 import { NextRequest, NextResponse } from "next/server";
 
 async function updateWalletBalances() {
@@ -10,8 +12,8 @@ async function updateWalletBalances() {
         onboarding: { status: "Verified" },
         OR: [
           { wallet: { bonusUpdated: null } },
-          // { wallet: { bonusUpdated: { lte: new Date(Date.now() - DEFAULT_BONUS_UPDATE_TIME) } } }
-          { wallet: { bonusUpdated: { lte: new Date(Date.now() - 1000 * 60) } } },
+          { wallet: { bonusUpdated: { lte: new Date(Date.now() - DEFAULT_BONUS_UPDATE_TIME) } } }
+
         ],
       },
       include: { wallet: true },
@@ -19,47 +21,37 @@ async function updateWalletBalances() {
 
     if (!users || users.length === 0) {
       console.log("No verified users found.");
-      return;
+      throw new Error("No verified users found")
     }
+    const startDate = startOfDay(new Date())
+    for (const user of users) {
+      if (user.wallet) {
+        const updatedWallet = await db.wallet.update({
+          where: { id: user.wallet.id },
+          data: {
+            balance: { increment: user.dailyBonusLimit },
+            bonusUpdated: startDate,
+          },
+        });
 
-    const updatedUser = await db.wallet.updateMany({
-      where: {
-        userId: {
-          in: users.map((user) => user.id),
-        },
-      },
-      data: {
-        balance: {
-          increment: users.map((user) => user.dailyBonusLimit || 50).reduce((acc, limit) => acc + limit, 0),
-        },
-        bonusUpdated: new Date(),
-      },
-    });
+        await db.bonus.create({
+          data: {
+            walletId: user.wallet.id,
+            amount: user.dailyBonusLimit,
+            updatedAt: startDate
+          },
+        });
+      }
+    }
 
     console.log("Wallet balances updated successfully");
   } catch (error) {
-    console.error("Error updating wallet balances:", error);
+    console.error("Error updating wallet balances:");
+    throw error
   }
 }
 
-// Define a function to perform basic authentication
-function isAuthenticated(req: NextRequest) {
-  const authheader = req.headers.get("authorization") || req.headers.get("Authorization");
 
-  if (!authheader) {
-    return false;
-  }
-
-  const auth = Buffer.from(authheader.split(" ")[1], "base64").toString().split(":");
-  const user = auth[0];
-  const pass = auth[1];
-
-  if (user == "adscrush" && pass == "adscrush") {
-    return true;
-  } else {
-    return false;
-  }
-}
 
 async function handler(req: NextRequest, res: NextResponse) {
   try {
@@ -71,10 +63,11 @@ async function handler(req: NextRequest, res: NextResponse) {
     }
 
     await updateWalletBalances();
+    return NextResponse.json({ success: true });
   } catch (error) {
-    console.log(error);
+    return NextResponse.json({ success: false });
   }
-  return NextResponse.json({ success: true });
 }
 
 export { handler as GET, handler as POST };
+

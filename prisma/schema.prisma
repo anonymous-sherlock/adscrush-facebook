@@ -95,12 +95,25 @@ model Wallet {
   user         User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String    @unique
   payments     Payment[]
+  bonus        Bonus[]
   bonusUpdated DateTime?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
   @@index([userId], name: "idx_userId")
   @@map("wallet")
+}
+
+model Bonus {
+  id        String       @id @default(cuid())
+  amount    Float
+  type      Payment_Type @default(Bonus)
+  wallet    Wallet?      @relation(fields: [walletId], references: [id])
+  walletId  String?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@map("bonus")
 }
 
 model Payment {

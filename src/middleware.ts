@@ -1,5 +1,4 @@
 import { env } from "@/env.mjs";
-import { TokensIcon } from "@radix-ui/react-icons";
 import { DEFAULT_LOGIN_REDIRECT, ONBOARDING_REDIRECT, apiAuthPrefix, apiPrefix, authRoutes, publicRoutes } from "@routes";
 import { withAuth } from "next-auth/middleware";
 
@@ -11,7 +10,6 @@ export default withAuth(
     const token = req.nextauth.token;
 
     const isOnboarded = req.nextauth.token?.isOnboarded;
-
     const isApiRoute = nextUrl.pathname.startsWith(apiPrefix);
     const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname);

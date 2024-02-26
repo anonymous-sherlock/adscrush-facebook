@@ -7,7 +7,8 @@ import Link from 'next/link';
 import Cal from '../../../public/cal.png';
 import Mainbanner from '../../../public/main-banner.jpg';
 
-const HomePage = () => {
+
+const  HomePage = async () => {
   return (
     <>
       <section

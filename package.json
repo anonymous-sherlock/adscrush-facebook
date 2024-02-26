@@ -15,6 +15,9 @@
     "postinstall": "prisma generate",
     "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache"
   },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
     "@next-auth/prisma-adapter": "^1.0.7",
@@ -102,6 +105,7 @@
     "prettier-plugin-tailwindcss": "^0.5.7",
     "prisma": "^5.9.1",
     "tailwindcss": "^3",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   }
 }

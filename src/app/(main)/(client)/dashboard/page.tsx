@@ -13,6 +13,10 @@ import { Overview } from "./_components/overview";
 import { wrapServerCall } from "@/lib/utils";
 import { server } from "@/app/_trpc/server";
 import { PageHeader, PageHeaderDescription, PageHeaderHeading } from "@/components/page-header";
+import { DataTable } from "./_bonus_table/data-table";
+import { columns } from "./_bonus_table/columns";
+import React from "react";
+import { bonus } from "@/server/api/bonus";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -36,6 +40,8 @@ async function DashboardPage() {
 
   const payments = await wrapServerCall(() => server.payment.getAll({ limit: 5 }));
   const paymentsCount = await wrapServerCall(() => server.payment.getTotalPaymentCount());
+  const bonusCount = await bonus.count(user.id)
+  const bonuses = await bonus.getAll(user.id)
 
   return (
     <>
@@ -50,9 +56,7 @@ async function DashboardPage() {
         <Tabs defaultValue="overview" className="space-y-4">
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="analytics" disabled>
-              Analytics
-            </TabsTrigger>
+            <TabsTrigger value="bonus">Bonus History</TabsTrigger>
           </TabsList>
           <TabsContent value="overview" className="space-y-4">
             <InfoCard />
@@ -75,6 +79,21 @@ async function DashboardPage() {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+          <TabsContent value="bonus">
+            <React.Suspense>
+              <Card className="col-span-3 !mt-0">
+                <CardHeader>
+                  <CardTitle>Bonus history</CardTitle>
+                  <CardDescription>
+                    You have {bonusCount ?? 0} Bonus History.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <DataTable data={bonuses ?? []} columns={columns} />
+                </CardContent>
+              </Card>
+            </React.Suspense>
           </TabsContent>
         </Tabs>
       </div>

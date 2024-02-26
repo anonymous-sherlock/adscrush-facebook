@@ -138,7 +138,7 @@ export function PayoutForm({ className }: PayoutFormProps) {
             <FormSuccess message={success} />
             <FormError message={error} />
 
-            <Button className="w-full mb-2">
+            <Button className="w-full mb-2" disabled={isLoading || isPending}>
               {isLoading && (
                 <Icons.spinner
                   className="mr-2 h-4 w-4 animate-spin"
