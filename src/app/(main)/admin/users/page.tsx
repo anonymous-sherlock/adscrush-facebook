@@ -19,6 +19,7 @@ import { getCurrentUser } from "@/lib/auth"
 import { cn } from "@/lib/utils"
 import { UserFilterValues } from "@/schema/filter.schema"
 import { authPages } from "@routes"
+import { admin } from "@/server/api/admin"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -37,27 +38,7 @@ export default async function UsersPage({ searchParams: { name } }: UsersPagePro
   const user = await getCurrentUser()
 
   if (!user) redirect(authPages.login)
-
-  const onData = await db.user.findMany({
-    where: {
-      name: {
-        contains: name
-      }
-    },
-
-    select: {
-      id: true,
-      name: true,
-      isOnboarded: true
-    },
-    orderBy: {
-      isOnboarded: {
-        sort: 'asc', nulls: 'last'
-      }
-    }
-  })
-
-
+  const userListData = await admin.getUsersList(name)
 
   const filterValues: UserFilterValues = {
     name
@@ -77,7 +58,7 @@ export default async function UsersPage({ searchParams: { name } }: UsersPagePro
           </PageHeaderDescription>
         </PageHeader>
         <SearchInput placeholder="Search User" className="bg-white h-11" defaultValues={filterValues} />
-        <Alert>
+        {/* <Alert>
           <RocketIcon className="h-4 w-4" aria-hidden="true" />
           <AlertTitle>Heads up!</AlertTitle>
           <AlertDescription>
@@ -88,10 +69,10 @@ export default async function UsersPage({ searchParams: { name } }: UsersPagePro
             <span className="font-semibold">2</span> products on
             this plan.
           </AlertDescription>
-        </Alert>
+        </Alert> */}
         <section className={cn("grid gap-6 sm:grid-cols-2 lg:grid-cols-3")}>
 
-          {onData && onData?.map((user) => (
+          {userListData && userListData?.map((user) => (
 
             <UserCard key={user.id} href={`users/${user.id}`} user={user} />
           )

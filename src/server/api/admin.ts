@@ -8,9 +8,11 @@ export class AdminApi {
     private currentUserId: string | undefined;
 
     constructor(opts?: AdminApiArgs) {
-        getCurrentUser().then((data) => {
-            this.currentUserId = data?.id;
-        });
+        this.init();
+    }
+    private async init() {
+        const currentUser = await getCurrentUser();
+        this.currentUserId = currentUser?.id;
     }
     async userCount() {
         try {
@@ -18,6 +20,26 @@ export class AdminApi {
             return userCount;
         } catch (err) {
             return null
+        }
+    }
+
+    async getUsersList(name?: string) {
+        try {
+            const users = await db.user.findMany({
+                where: {
+                    name: { contains: name },
+                    id: { not: this.currentUserId }
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    isOnboarded: true
+                },
+                orderBy: { isOnboarded: { sort: 'asc', nulls: 'last' } }
+            })
+            return users
+        } catch (error) {
+
         }
     }
 }
