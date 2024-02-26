@@ -18,15 +18,13 @@ const getDetailsOutput = z.object({
 		amount: z.number().nullish()
 	})
 })
+const getDetailsInput = z.object({ userId: z.string().optional() }).optional();
 
 export const dashboardRouter = router({
 
-	getDetails: privateProcedure.output(getDetailsOutput).query(async ({ ctx }) => {
-		const { userId } = ctx
-
-
+	getDetails: privateProcedure.input(getDetailsInput).output(getDetailsOutput).query(async ({ ctx, input }) => {
+		let userId = input?.userId || ctx.userId;
 		const user = await getUserById(userId)
-
 		const walletBalance = await db.wallet.findUnique({
 			where: {
 				userId: userId

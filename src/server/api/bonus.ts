@@ -30,7 +30,9 @@ export class BonusTracking {
             userId: userId
           }
         },
-        orderBy: { updatedAt: "desc" }
+        orderBy: {
+          createdAt: "desc"
+        }
       })
 
       return bonuses

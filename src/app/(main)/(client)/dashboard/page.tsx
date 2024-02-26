@@ -8,13 +8,12 @@ import { getCurrentIsOnboarded, getCurrentUser } from "@/lib/auth";
 import { ONBOARDING_REDIRECT, authPages } from "@routes";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { CalendarDateRangePicker } from "./_components/date-range-picker";
 import { Overview } from "./_components/overview";
 import { wrapServerCall } from "@/lib/utils";
 import { server } from "@/app/_trpc/server";
 import { PageHeader, PageHeaderDescription, PageHeaderHeading } from "@/components/page-header";
-import { DataTable } from "./_bonus_table/data-table";
-import { columns } from "./_bonus_table/columns";
+import { DataTable } from "@/components/template/_bonus_table/data-table";
+import { columns } from "@/components/template/_bonus_table/columns";
 import React from "react";
 import { bonus } from "@/server/api/bonus";
 
@@ -59,7 +58,7 @@ async function DashboardPage() {
             <TabsTrigger value="bonus">Bonus History</TabsTrigger>
           </TabsList>
           <TabsContent value="overview" className="space-y-4">
-            <InfoCard />
+            <InfoCard userId={user.id} />
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
               <Card className="col-span-4">
                 <CardHeader>

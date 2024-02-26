@@ -2,10 +2,10 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function initDb() {
-  const wallet = await prisma.wallet.findFirst({ where: { id: "clr9bbdpj0000tc9tlulb1q2n" } });
+  const wallet = await prisma.wallet.findFirst({ where: { id: "clrojp9yv0000k7tmjvtdrl0e" } });
   if (!wallet) return;
 
-  const startDate = new Date(2024, 0, 11); // Jan 11, 2024
+  const startDate = new Date(2024, 0, 19); // Jan 15, 2024
   const endDate = new Date(2024, 1, 26);   // Feb 26, 2024
   let date = new Date(startDate); 
 

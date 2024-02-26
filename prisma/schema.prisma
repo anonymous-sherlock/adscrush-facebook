@@ -139,6 +139,7 @@ enum Payment_Type {
   Deposit
   Withdraw
   Bonus
+  Referral
 }
 
 enum Payment_Status {

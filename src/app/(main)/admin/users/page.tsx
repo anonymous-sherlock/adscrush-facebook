@@ -66,7 +66,6 @@ export default async function UsersPage({ searchParams: { name } }: UsersPagePro
   return (
     <ScrollArea className="h-[calc(100vh_-_65px)]">
       <Shell>
-
         <PageHeader>
           <div className="flex space-x-4">
             <PageHeaderHeading size="sm" className="flex-1">

@@ -89,7 +89,7 @@ export const columns: ColumnDef<BonusList>[] = [
     ),
     cell: ({ row }) => (
       <div className="truncate">
-        {format(row.original.updatedAt, "MMM dd, yyyy - hh:mmaaa")}
+        {format(row.original.createdAt, "MMM dd, yyyy - hh:mmaaa")}
       </div>
     ),
     enableSorting: false,

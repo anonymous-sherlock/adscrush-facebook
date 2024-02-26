@@ -16,6 +16,9 @@ interface AdminSidebarProps extends PropsWithChildren {
     defaultLayout: number[] | undefined
     defaultCollapsed?: boolean
     navCollapsedSize: number
+    navItems: {
+        userCount: number
+    }
 
 }
 
@@ -23,6 +26,7 @@ function AdminSidebar({
     defaultLayout = [200, 440, 655],
     defaultCollapsed = false,
     navCollapsedSize,
+    navItems,
     children
 }: AdminSidebarProps) {
     const [isCollapsed, setIsCollapsed] = React.useState<boolean>(defaultCollapsed)
@@ -57,8 +61,8 @@ function AdminSidebar({
                 >
                     <div className={cn("flex gap-2 h-[56px] items-center justify-center", isCollapsed ? 'h-[52px]' : 'px-2')}>
                         <Image src={logo.src} width={32} height={32} alt='Logo' className='rounded-sm' />
-                       
-                       {!isCollapsed ? <p className='grow font-semibold'>Adscrush</p> : null} 
+
+                        {!isCollapsed ? <p className='grow font-semibold'>Adscrush</p> : null}
                     </div>
                     <Separator />
                     <Nav
@@ -66,21 +70,14 @@ function AdminSidebar({
                         links={[
                             {
                                 title: "All Users",
-                                label: "12",
+                                label: navItems.userCount.toString(),
                                 icon: Users2,
                                 variant: "ghost",
-                                href:"/"
-                            },
-                            {
-                                title: "Inbox",
-                                label: "128",
-                                icon: Inbox,
-                                variant: "secondary",
-                                href:"/"
+                                href: "/admin/users"
                             },
                         ]}
                     />
-                   
+
                 </ResizablePanel>
                 <ResizableHandle withHandle onDoubleClick={(e) => {
                     console.log(e);

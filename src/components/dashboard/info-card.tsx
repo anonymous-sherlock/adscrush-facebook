@@ -7,10 +7,11 @@ import { server } from "@/app/_trpc/server";
 
 interface InfoCardProps {
   className?: string;
+  userId: string
 }
 
-export async function InfoCard({ className }: InfoCardProps) {
-  const data = await wrapServerCall(() => server.dashboard.getDetails());
+export async function InfoCard({ className, userId }: InfoCardProps) {
+  const data = await wrapServerCall(() => server.dashboard.getDetails({ userId }));
   return (
     <div className={cn("grid gap-4 md:grid-cols-2 lg:grid-cols-4", className)}>
       <Card>
