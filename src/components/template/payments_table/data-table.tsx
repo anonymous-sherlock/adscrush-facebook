@@ -30,6 +30,8 @@ import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
 import { trpc } from "@/app/_trpc/client";
 import { RouterOutputs } from "@/server";
+import { useParams } from "next/navigation";
+import { AdminUsersListParams } from "@/types";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -45,16 +47,13 @@ export function DataTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({});
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>(initialVisibilityState);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>(initialVisibilityState);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
+  const { userId } = useParams<AdminUsersListParams>()
 
-
-  const { data: initialData } = trpc.payment.getAll.useQuery({ limit: undefined }, {
+  const { data: initialData } = trpc.payment.getAll.useQuery({ limit: undefined, userId }, {
     initialData: data as RouterOutputs["payment"]["getAll"],
     refetchOnMount: false,
     refetchOnReconnect: false,

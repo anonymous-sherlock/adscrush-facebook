@@ -1,3 +1,4 @@
+import { Params } from "next/dist/shared/lib/router/utils/route-matcher"
 import { type FileWithPath } from "react-dropzone"
 
 export type FileWithPreview = FileWithPath & {
@@ -23,3 +24,8 @@ export interface DataTableFilterableColumn<TData>
   extends DataTableSearchableColumn<TData> {
   options: Option[]
 }
+
+
+export interface AdminUsersListParams extends Params {
+  userId: string
+}  

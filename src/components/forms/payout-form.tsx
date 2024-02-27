@@ -24,6 +24,7 @@ import { FormError } from "../form-error"
 import { checkPaymentMethod, getUserPayoutDetails } from "@/lib/actions/payment"
 import { z } from "zod"
 import { Avatar } from "@nextui-org/react"
+import { useRouter } from "next/navigation"
 
 interface PayoutFormProps {
   className?: string
@@ -31,6 +32,7 @@ interface PayoutFormProps {
 
 export function PayoutForm({ className }: PayoutFormProps) {
   const [error, setError] = useState<string | undefined>("");
+  const router = useRouter()
   const [success, setSuccess] = useState<string | undefined>("");
   const [data, setData] = useState<Awaited<ReturnType<typeof getUserPayoutDetails>>>();
 
@@ -44,7 +46,10 @@ export function PayoutForm({ className }: PayoutFormProps) {
   })
 
   const { mutate: requestPayment, isLoading } = trpc.payment.requestPayout.useMutation({
-    onSuccess(data) { toast.success(data.message) },
+    onSuccess(data) {
+      toast.success(data.message);
+      router.refresh()
+    },
     onError(err) {
       setError(err.message)
       toast.error(err.message)
@@ -161,33 +166,33 @@ function RenderPayoutMethod({ paymentMethod }: { paymentMethod: any }) {
   if (!parsedPaymentMethod.success) return null
   if ("upiId" in parsedPaymentMethod.data.details) {
     return (
-    <div  className="flex items-center gap-2">
-      <Avatar
-        alt="Upi Id"
-        className="flex-shrink-0 w-7 h-7"
-        size="sm"
-        src={`https://avatar.vercel.sh/a1b23456789.png`}
-      />
-      <div className="flex flex-col items-start">
-        <span>Upi Id</span>
-        <span className="text-default-500 text-tiny">({parsedPaymentMethod.data.details.upiId})</span>
+      <div className="flex items-center gap-2">
+        <Avatar
+          alt="Upi Id"
+          className="flex-shrink-0 w-7 h-7"
+          size="sm"
+          src={`https://avatar.vercel.sh/a1b23456789.png`}
+        />
+        <div className="flex flex-col items-start">
+          <span>Upi Id</span>
+          <span className="text-default-500 text-tiny">({parsedPaymentMethod.data.details.upiId})</span>
+        </div>
       </div>
-    </div>
     )
   } else {
     return (
-      <div  className="flex items-center gap-2">
-      <Avatar
-        alt="Upi Id"
-        className="flex-shrink-0 w-7 h-7"
-        size="sm"
-        src={`https://avatar.vercel.sh/a1b23456789.png`}
-      />
-      <div className="flex flex-col items-start">
-        <span>{parsedPaymentMethod.data.details.accountHolderName}</span>
-        <span className="text-default-500 text-tiny">{parsedPaymentMethod.data.details.bankName} - {formatAccountNumber(parsedPaymentMethod.data.details.accountNumber)}</span>
+      <div className="flex items-center gap-2">
+        <Avatar
+          alt="Upi Id"
+          className="flex-shrink-0 w-7 h-7"
+          size="sm"
+          src={`https://avatar.vercel.sh/a1b23456789.png`}
+        />
+        <div className="flex flex-col items-start">
+          <span>{parsedPaymentMethod.data.details.accountHolderName}</span>
+          <span className="text-default-500 text-tiny">{parsedPaymentMethod.data.details.bankName} - {formatAccountNumber(parsedPaymentMethod.data.details.accountNumber)}</span>
+        </div>
       </div>
-    </div>
     )
   }
 }

@@ -6,7 +6,11 @@ import { z } from "zod";
 
 const paymentQuerySchema = z.object({
   limit: z.number().nullish().optional(),
-});
+  userId: z.string().nullish().optional()
+}).optional();
+const getTotalPaymentCountSchema = z.object({
+  userId: z.string().nullish().optional()
+}).optional();
 
 export const paymentRouter = router({
   requestPayout: privateProcedure.input(payoutFormSchema).mutation(async ({ ctx, input }) => {
@@ -46,7 +50,6 @@ export const paymentRouter = router({
         },
       }),
     ]);
-
     return {
       success: true,
       message: "payment request sent.",
@@ -54,26 +57,21 @@ export const paymentRouter = router({
   }),
 
   getAll: privateProcedure.input(paymentQuerySchema).query(async ({ ctx, input }) => {
-    const { limit } = input;
+    const limit = input?.limit;
+    let userId = input?.userId || ctx.userId
     const payments = await db.payment.findMany({
-      where: {
-        userId: ctx.userId,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-      include: {
-        userPayoutMethod: true,
-      },
+      where: { userId: userId, },
+      orderBy: { createdAt: "desc", },
+      include: { userPayoutMethod: true, },
       take: limit ? limit : undefined,
     });
-
     return payments;
   }),
 
-  getTotalPaymentCount: privateProcedure.query(async ({ ctx, input }) => {
+  getTotalPaymentCount: privateProcedure.input(getTotalPaymentCountSchema).query(async ({ ctx, input }) => {
+    let userId = input?.userId || ctx.userId
     const paymentsCount = await db.payment.count({
-      where: { userId: ctx.userId },
+      where: { userId },
     });
     return paymentsCount;
   }),

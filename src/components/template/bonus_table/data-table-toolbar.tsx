@@ -1,22 +1,16 @@
 "use client";
-
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { Table } from "@tanstack/react-table";
-
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
 import { DataTableViewOptions } from "./data-table-view-options";
-
-import { trpc } from "@/app/_trpc/client";
 import { RefreshCw } from "lucide-react";
-
 import TooltipComponent from "@/components/tooltip-component";
-import { BONUS_TYPE, PAYMENT_STATUS } from "@/constants/index";
+import { BONUS_TYPE } from "@/constants/index";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
-import { useRouter } from "next/navigation";
-
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;

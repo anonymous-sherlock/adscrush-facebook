@@ -12,8 +12,8 @@ import { Overview } from "./_components/overview";
 import { wrapServerCall } from "@/lib/utils";
 import { server } from "@/app/_trpc/server";
 import { PageHeader, PageHeaderDescription, PageHeaderHeading } from "@/components/page-header";
-import { DataTable } from "@/components/template/_bonus_table/data-table";
-import { columns } from "@/components/template/_bonus_table/columns";
+import { DataTable } from "@/components/template/bonus_table/data-table";
+import { columns } from "@/components/template/bonus_table/columns";
 import React from "react";
 import { bonus } from "@/server/api/bonus";
 

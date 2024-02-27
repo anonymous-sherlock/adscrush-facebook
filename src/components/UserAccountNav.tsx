@@ -77,6 +77,12 @@ const UserAccountNav = ({
                 <DropdownMenuItem asChild>
                     <Link href='/dashboard' className='cursor-pointer'>Dashboard</Link>
                 </DropdownMenuItem>
+                {
+                    user?.role === "ADMIN" &&
+                    <DropdownMenuItem asChild>
+                        <Link href='/admin/users' className='cursor-pointer'>Admin Dashboard</Link>
+                    </DropdownMenuItem>
+                }
 
                 <DropdownMenuItem asChild>
 

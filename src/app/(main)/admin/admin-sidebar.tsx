@@ -16,17 +16,12 @@ interface AdminSidebarProps extends PropsWithChildren {
     defaultLayout: number[] | undefined
     defaultCollapsed?: boolean
     navCollapsedSize: number
-    navItems: {
-        userCount: number
-    }
-
 }
 
 function AdminSidebar({
     defaultLayout = [200, 440, 655],
     defaultCollapsed = false,
     navCollapsedSize,
-    navItems,
     children
 }: AdminSidebarProps) {
     const [isCollapsed, setIsCollapsed] = React.useState<boolean>(defaultCollapsed)
@@ -70,7 +65,7 @@ function AdminSidebar({
                         links={[
                             {
                                 title: "All Users",
-                                label: navItems.userCount.toString(),
+                                label: "",
                                 icon: Users2,
                                 variant: "ghost",
                                 href: "/admin/users"

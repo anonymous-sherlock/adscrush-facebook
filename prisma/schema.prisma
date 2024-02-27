@@ -49,7 +49,7 @@ model User {
   updatedAt       DateTime       @updatedAt
   userPrefrence   UserPrefrence?
 
-  @@fulltext([name])
+  @@fulltext([name, email])
 }
 
 model UserPrefrence {

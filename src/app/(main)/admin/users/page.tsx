@@ -1,10 +1,7 @@
 import { env } from "@/env.mjs"
 import type { Metadata } from "next"
 import { redirect } from "next/navigation"
-
-import { RocketIcon } from "@radix-ui/react-icons"
-
-import { UserCard } from "@/components/cards/user-card"
+import UsersResults from "@/components/admin/UsersListResults"
 import {
   PageHeader,
   PageHeaderDescription,
@@ -12,14 +9,12 @@ import {
 } from "@/components/page-header"
 import { SearchInput } from "@/components/search-input"
 import { Shell } from "@/components/shell"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import { db } from "@/db"
 import { getCurrentUser } from "@/lib/auth"
 import { cn } from "@/lib/utils"
 import { UserFilterValues } from "@/schema/filter.schema"
-import { authPages } from "@routes"
 import { admin } from "@/server/api/admin"
+import { authPages } from "@routes"
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -31,17 +26,16 @@ interface UsersPageProps {
   searchParams: {
     name?: string;
     page?: string;
+    onboarded?: boolean
   };
 }
 
-export default async function UsersPage({ searchParams: { name } }: UsersPageProps) {
+export default async function UsersPage({ searchParams: { name, page, onboarded } }: UsersPageProps) {
   const user = await getCurrentUser()
-
   if (!user) redirect(authPages.login)
-  const userListData = await admin.getUsersList(name)
 
   const filterValues: UserFilterValues = {
-    name
+    name, onboarded
   };
 
   return (
@@ -70,14 +64,10 @@ export default async function UsersPage({ searchParams: { name } }: UsersPagePro
             this plan.
           </AlertDescription>
         </Alert> */}
-        <section className={cn("grid gap-6 sm:grid-cols-2 lg:grid-cols-3")}>
-
-          {userListData && userListData?.map((user) => (
-
-            <UserCard key={user.id} href={`users/${user.id}`} user={user} />
-          )
-          )}
-        </section>
+        <UsersResults
+          filterValues={filterValues}
+          page={page ? parseInt(page) : undefined}
+        />
       </Shell>
       <ScrollBar color="#000000" />
     </ScrollArea>

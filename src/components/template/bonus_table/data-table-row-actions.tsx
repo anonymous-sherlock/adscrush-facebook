@@ -10,13 +10,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/ui/dropdown-menu";
-
 import { AlertDialog } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-
-
 import { BonusListSchema } from "./schema";
-
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }

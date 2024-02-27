@@ -6,10 +6,8 @@ import { getCurrentUser } from '@/lib/auth'
 import { wrapServerCall } from '@/lib/utils'
 import { SearchParams } from '@/types'
 import React from 'react'
-import { columns } from './_table/columns'
-import { DataTable } from './_table/data-table'
-
-export const revalidate = 0;
+import { columns } from '@/components/template/payments_table/columns'
+import { DataTable } from '@/components/template/payments_table/data-table'
 
 interface WalletPageProps {
   searchParams: SearchParams
