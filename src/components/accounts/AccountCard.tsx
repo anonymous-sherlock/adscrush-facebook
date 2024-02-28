@@ -19,12 +19,14 @@ interface UserAccountCardProps {
 
 
 export const UserAccountCard = ({ createdAt, id, name, status, profileLink, username }: UserAccountCardProps) => {
-  const [isFollowed, setIsFollowed] = React.useState(false);
-
   const profileUrl = new URL(profileLink)
   const profileID = profileUrl.searchParams.get("id")
-  let avatarLocation = `https://graph.facebook.com/${"100075465566989"}/picture?width=640&height=640`
+  const width = 640;
+  const height = 640;
+  console.log(profileID)
+  const accessToken = 'EAAFrcoSi4EsBO6xl2ZAhFn0UkOT0W5VDb521gAfd4kbC0cQKJ3POkS9UoBTXbRFX4ZA3WnzUroXZC6DaJHqZCeOPGJLyxeAnyVWFOVRJa4DS279Va0DBHWLzDCXJDsuB1qSddD8aTX4dSCMvB17vODYQ9FOFzQpN7LwXH3n44EsnycvUZAThWFWEauJA3LHnP9gZDZD'; // replace with your access token
 
+  const avatarLocation = `https://graph.facebook.com/${profileID}/picture?width=${width}&height=${height}&access_token=${accessToken}`;
   return (
     <Card shadow="none" className="hover:shadow-lg shadow transition">
       <CardHeader className="justify-between">
@@ -36,14 +38,10 @@ export const UserAccountCard = ({ createdAt, id, name, status, profileLink, user
           </div>
         </div>
         <Button
-          className={isFollowed ? "bg-transparent text-foreground border-default-200" : ""}
-
           color="primary"
           radius="full"
           size="sm"
-          variant={"solid"}
-          onPress={() => setIsFollowed(!isFollowed)}
-        >
+          variant={"solid"}>
           <Link href={profileLink}>
             View Profile
           </Link>
@@ -66,7 +64,7 @@ export const UserAccountCard = ({ createdAt, id, name, status, profileLink, user
         <div className="flex gap-1 items-center justify-between">
           <Plus className="h-4 w-4 font-semibold text-default-600 text-small" />
           <p className="text-default-500 text-small">
-            {format(new Date(createdAt), "MMM dd, yyyy")}
+            {format(new Date(createdAt), "MMM dd, yyyy - hh:mmaaa")}
           </p>
         </div>
         <CustomBadge badgeValue={status} status={ONBOARDING_STATUS} />

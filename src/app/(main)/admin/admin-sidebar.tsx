@@ -70,6 +70,13 @@ function AdminSidebar({
                                 variant: "ghost",
                                 href: "/admin/users"
                             },
+                            {
+                                title: "All Accounts",
+                                label: "",
+                                icon: Users2,
+                                variant: "ghost",
+                                href: "/admin/accounts"
+                            },
                         ]}
                     />
 

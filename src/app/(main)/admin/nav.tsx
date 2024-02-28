@@ -27,6 +27,8 @@ export function Nav({ links, isCollapsed }: NavProps) {
   const segments = useSelectedLayoutSegments()
   const segment = segments[segments.length - 1]
   const pathname = usePathname()
+
+
   return (
     <div
       data-collapsed={isCollapsed}
@@ -41,9 +43,10 @@ export function Nav({ links, isCollapsed }: NavProps) {
                   href={link.href}
                   className={cn(
                     buttonVariants({ variant: link.variant, size: "icon" }),
-                    "h-9 w-9 bg-primary/10",
+                    "h-9 w-9",
                     link.variant === "default" &&
-                    "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white"
+                    "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white",
+                    pathname === link.href && "bg-secondary text-primary"
                   )}
                 >
                   <link.icon className="h-4 w-4" />
@@ -67,7 +70,8 @@ export function Nav({ links, isCollapsed }: NavProps) {
                 buttonVariants({ variant: link.variant, size: "sm" }),
                 link.variant === "default" &&
                 "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
-                "justify-start bg-secondary",
+                "justify-start bg-secondary/30",
+                pathname === link.href && "bg-secondary text-primary"
               )}
             >
               <link.icon className="mr-2 h-4 w-4" />
