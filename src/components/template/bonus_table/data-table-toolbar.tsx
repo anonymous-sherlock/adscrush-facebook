@@ -34,7 +34,8 @@ export function DataTableToolbar<TData>({
 
   return (
     <div className="flex items-center justify-between">
-      <div className="flex flex-1 items-center space-x-2">
+      <div className="flex md:flex-row flex-wrap flex-1 md:items-center justify-start  md:space-x-2
+      gap-2">
         <Input
           placeholder="Search Bonus..."
           value={table.getState().globalFilter}
@@ -42,7 +43,7 @@ export function DataTableToolbar<TData>({
           className="h-8 w-[150px] lg:w-[250px]"
         />
         <TooltipComponent message="Refetch Data" delayDuration={250}>
-          <Button variant="outline" size="sm" className="h-8 w-8 p-2 border-dashed" onClick={handleRefreshClick} >
+          <Button variant="outline" size="sm" className="h-8 w-8 p-2 border-dashed m-0" onClick={handleRefreshClick} >
             <RefreshCw color="#000" className={cn("",
               isRotating ? 'animate-spin' : '',
             )} /></Button>

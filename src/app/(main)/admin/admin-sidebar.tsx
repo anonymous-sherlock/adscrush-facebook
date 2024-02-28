@@ -35,7 +35,7 @@ function AdminSidebar({
                         sizes
                     )}`
                 }}
-                className="h-full min-h-[calc(100vh_-_65px)] items-stretch"
+                className="h-full min-h-[calc(100vh_-_65px)] items-stretch hidden md:flex"
             >
                 <ResizablePanel
                     defaultSize={defaultLayout[0]}
@@ -52,7 +52,7 @@ function AdminSidebar({
                     }}
 
 
-                    className={cn("bg-white", isCollapsed && "min-w-[50px] max-w-[50px] transition-all duration-300 ease-in-out")}
+                    className={cn("bg-white", isCollapsed && "min-w-[50px] max-w-[50px] hidden md:block transition-all duration-300 ease-in-out")}
                 >
                     <div className={cn("flex gap-2 h-[56px] items-center justify-center", isCollapsed ? 'h-[52px]' : 'px-2')}>
                         <Image src={logo.src} width={32} height={32} alt='Logo' className='rounded-sm' />
@@ -73,7 +73,7 @@ function AdminSidebar({
                             {
                                 title: "All Accounts",
                                 label: "",
-                                icon: Users2,
+                                icon: Inbox,
                                 variant: "ghost",
                                 href: "/admin/accounts"
                             },
@@ -82,7 +82,6 @@ function AdminSidebar({
 
                 </ResizablePanel>
                 <ResizableHandle withHandle onDoubleClick={(e) => {
-                    console.log(e);
                     // Fix: Update setIsCollapsed with a new value, for example, toggle the previous value
                     setIsCollapsed((prev) => !prev);
                 }}

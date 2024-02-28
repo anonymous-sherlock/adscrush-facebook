@@ -14,10 +14,11 @@ interface UsersResultsProps {
 
 export default async function UsersResults({
     filterValues,
-    page = 1,
+    page: searchPage = 1,
 }: UsersResultsProps) {
     const { name, onboarded } = filterValues;
-    const usersPerPage = 6;
+    const usersPerPage = 9;
+    const page = isNaN(searchPage) ? 1 : searchPage
     const skip = (page - 1) * usersPerPage;
 
     const searchString = name
@@ -38,7 +39,10 @@ export default async function UsersResults({
     const where: Prisma.UserWhereInput = {
         AND: [
             searchFilter,
-            onboarded ? { isOnboarded: { not: null } } : {}
+            onboarded && onboarded === "all" ? {} : {},
+            onboarded === "onboarded" ? { isOnboarded: { not: null } } : {},
+            onboarded === "not_onboarded" ? { isOnboarded: { equals: null } } : {}
+
         ],
     };
 
@@ -95,7 +99,7 @@ function Pagination({
     function generatePageLink(page: number) {
         const searchParams = new URLSearchParams({
             ...(name && { name }),
-            ...(onboarded && { onboarded: "true" }),
+            ...(onboarded && { onboarded: onboarded }),
             page: page.toString(),
         });
 

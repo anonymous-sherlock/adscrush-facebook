@@ -14,8 +14,6 @@ export default withAuth(
     const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
-
-    // console.log("tokken in : ", nextUrl.pathname, req.nextauth.token)
     if (isApiAuthRoute) {
       return null;
     }

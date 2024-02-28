@@ -69,7 +69,6 @@ export function PayoutForm({ className }: PayoutFormProps) {
 
 
   async function onSubmit(values: z.infer<typeof payoutFormSchema>) {
-    console.log(values)
     startTransition(async () => {
       try {
         const data = await checkPaymentMethod({ method: values.paymentMethod })

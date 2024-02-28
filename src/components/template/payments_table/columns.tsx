@@ -1,17 +1,15 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-
 import { Checkbox } from "@/ui/checkbox";
-
-import { Payment, Payment_Status, UserPaymentMethod } from "@prisma/client";
+import { CustomBadge } from "@/components/CustomBadge";
+import { PAYMENT_STATUS } from "@/constants/index";
+import { formatPrice } from "@/lib/utils";
+import { RouterOutputs } from "@/server";
+import { Payment } from "@prisma/client";
+import { format } from "date-fns";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
-import { formatDate, formatPrice } from "@/lib/utils";
-import { PAYMENT_STATUS } from "@/constants/index";
-import { cn } from "@/lib/utils";
-import { CustomBadge } from "@/components/CustomBadge";
-import { RouterOutputs } from "@/server";
 export type PaymentsList = Pick<
   Payment,
   "id" | "txid" | "status" | "amount" | "createdAt" | "type"
@@ -59,7 +57,7 @@ export const columns: ColumnDef<PaymentsList>[] = [
       <DataTableColumnHeader column={column} title="Transaction Id" />
     ),
     cell: ({ row }) => (
-      <div className="truncate">
+      <div className="w-[120px] truncate">
         {row.original.txid}
       </div>
     ),
@@ -109,9 +107,7 @@ export const columns: ColumnDef<PaymentsList>[] = [
       return (
         <div className="flex space-x-2 max-w-[220px] ">
           <span className="w-full truncate font-medium ">
-            {
-
-              row.original.type}
+            {row.original.type}
           </span>
         </div>
       );
@@ -124,14 +120,12 @@ export const columns: ColumnDef<PaymentsList>[] = [
       <DataTableColumnHeader column={column} title="Payment Status" />
     ),
     cell: ({ row }) => {
-
       return <CustomBadge badgeValue={row.original.status} status={PAYMENT_STATUS} />
     },
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
     enableSorting: false,
-
   },
   {
     accessorKey: "createdAt",
@@ -140,7 +134,7 @@ export const columns: ColumnDef<PaymentsList>[] = [
     ),
     cell: ({ row }) => (
       <div className="truncate">
-        {formatDate(row.original.createdAt,)}
+        {format(row.original.createdAt, "dd MMM, yyyy - hh:mmaaa")}
       </div>
     ),
     enableSorting: false,

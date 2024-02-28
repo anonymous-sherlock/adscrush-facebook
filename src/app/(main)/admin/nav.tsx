@@ -28,7 +28,6 @@ export function Nav({ links, isCollapsed }: NavProps) {
   const segment = segments[segments.length - 1]
   const pathname = usePathname()
 
-
   return (
     <div
       data-collapsed={isCollapsed}
@@ -46,7 +45,7 @@ export function Nav({ links, isCollapsed }: NavProps) {
                     "h-9 w-9",
                     link.variant === "default" &&
                     "dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white",
-                    pathname === link.href && "bg-secondary text-primary"
+                    pathname.startsWith(link.href) && "bg-secondary text-primary"
                   )}
                 >
                   <link.icon className="h-4 w-4" />
@@ -71,7 +70,7 @@ export function Nav({ links, isCollapsed }: NavProps) {
                 link.variant === "default" &&
                 "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
                 "justify-start bg-secondary/30",
-                pathname === link.href && "bg-secondary text-primary"
+                pathname.startsWith(link.href) && "bg-secondary text-primary"
               )}
             >
               <link.icon className="mr-2 h-4 w-4" />

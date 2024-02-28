@@ -20,7 +20,7 @@ async function UsersPaymentsPage({ params: { userId } }: UsersPaymentsPageProps)
 
 
   return (
-    <div>
+    <div className='block w-full'>
       <React.Suspense>
         <Card className="col-span-3 !mt-0">
           <CardHeader>

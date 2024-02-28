@@ -17,8 +17,9 @@ const UsersLayout: FC<DynamicUsersLayout> = async ({ children, params: { userId 
     const user = await getUserById(userId)
     if (!user) return notFound()
     return (
-        <ScrollArea className="h-[calc(100vh_-_65px)]">
-            <Shell className='flex flex-col gap-4 justify-start items-stretch mt-4'>
+
+        <ScrollArea className="h-[calc(100vh_-_65px)]  w-full">
+            <Shell className='flex flex-col gap-4 justify-start items-stretch mt-4 p-4 md:p-8'>
                 <PageHeader>
                     <div className="flex space-x-4">
                         <PageHeaderHeading size="sm" className="flex-1">
@@ -33,6 +34,7 @@ const UsersLayout: FC<DynamicUsersLayout> = async ({ children, params: { userId 
                 {children}
             </Shell>
         </ScrollArea>
+
     )
 }
 

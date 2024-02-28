@@ -1,53 +1,135 @@
-"use client";
-import { trpc } from "@/app/_trpc/client";
+import { db } from "@/db";
 import { cn } from "@/lib/utils";
-import { ONBOARDING_REDIRECT } from "@routes";
-import { Ghost } from "lucide-react";
+import { AccountsFilterValues, accountsFilterSchema } from "@/schema/filter.schema";
+import { buttonVariants } from "@/ui/button";
+import { Prisma } from "@prisma/client";
 import Link from "next/link";
-import Skeleton from "react-loading-skeleton";
-import { buttonVariants } from "../ui/button";
 import { UserAccountCard } from "./AccountCard";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
+interface AccountsListReultsProps {
+  filterValues: AccountsFilterValues;
+  page?: number;
+}
+export const AccountsListReults = async ({ filterValues, page: searchPage = 1 }: AccountsListReultsProps) => {
+  const { q, } = filterValues;
+  let status = filterValues.status
+  if (!accountsFilterSchema.safeParse({ status }).success) {
+    status = "All";
+  }
+  const accountsPerPage = 9;
+  const page = isNaN(searchPage) ? 1 : searchPage
+  const skip = (page - 1) * accountsPerPage;
 
-const AccountsDashboard = () => {
+  const searchString = q
+    ?.split(" ")
+    .filter((word) => word.length > 0)
+    .join(" & ");
 
-  const { data: account, isLoading } = trpc.onboarding.getAll.useQuery();
+  const searchFilter: Prisma.OnboardingWhereInput = searchString
+    ? {
+      OR: [
+        { name: { search: searchString, } },
+        { name: { contains: searchString } },
+        { facebook_username: { search: searchString, } },
+        { facebook_username: { contains: searchString } },
+        { email: { search: searchString } },
+      ],
+    }
+    : {};
 
+  const where: Prisma.OnboardingWhereInput = {
+    AND: [
+      searchFilter,
+      status && status === "All" ? {} : {},
+      status !== "All" ? { status: status } : {},
+    ],
+  };
+  const accountsPromise = db.onboarding.findMany({
+    where,
+    take: accountsPerPage,
+    skip,
+  })
+  const countPromise = db.onboarding.count({ where });
+  const [accounts, totalResults] = await Promise.all([accountsPromise, countPromise]);
 
   return (
-    <main className="container  md:p-2 md:px-8">
-      <div className="mt-8 flex flex-col items-start justify-between gap-4 border-b border-gray-200 pb-5 sm:flex-row sm:items-center sm:gap-0">
-        <h1 className="mb-3 font-bold text-4xl text-gray-900">Accounts</h1>
-
-        {/* <Link href={ONBOARDING_REDIRECT} className={cn(buttonVariants({ variant: "secondary" }), "rounded-full")}>Add new Account</Link> */}
-      </div>
-
-
-
-      {/* display all user account */}
-      {account  ? (
-        <ul className="mt-8 grid grid-cols-1 gap-6 divide-y divide-zinc-200 md:grid-cols-2 lg:grid-cols-3">
-              <UserAccountCard
-                key={account.id}
-                name={account.name}
-                id={account.id}
-                status={account.status}
-                createdAt={account.createdAt}
-                profileLink={account.facebook_profile_link}
-                username={account.facebook_username}
-              />
-        </ul>
-      ) : isLoading ? (
-        <Skeleton height={100} className="my-2" count={3} />
-      ) : (
-        <div className="mt-16 flex flex-col items-center gap-2">
-          <Ghost className="h-8 w-8 text-zinc-800" />
-          <h3 className="font-semibold text-xl">Pretty empty around here</h3>
-          <p>Let&apos;s create your first campaign.</p>
-        </div>
+    <>
+      <ul className="grid grid-cols-1 gap-6 divide-y divide-zinc-200 md:grid-cols-2 lg:grid-cols-3">
+        {accounts.map((account) => (
+          <UserAccountCard
+            key={account.id}
+            name={account.name}
+            id={account.id}
+            status={account.status}
+            createdAt={account.createdAt}
+            profileLink={account.facebook_profile_link}
+            username={account.facebook_username}
+          />
+        ))}
+      </ul>
+      {accounts.length === 0 && (
+        <p className="m-auto text-center">
+          No Accounts found. Try adjusting your search filters.{" "}<Link href="/admin/accounts/?" className={cn(buttonVariants({ variant: "link" }))}>Clear Filters</Link>
+        </p>
       )}
-    </main>
+      {accounts.length > 0 && (
+        <Pagination
+          currentPage={page}
+          totalPages={Math.ceil(totalResults / accountsPerPage)}
+          filterValues={filterValues}
+        />
+      )}
+    </>
   );
 };
 
-export default AccountsDashboard;
+interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  filterValues: AccountsFilterValues;
+}
+
+function Pagination({
+  currentPage,
+  totalPages,
+  filterValues: { q, status },
+}: PaginationProps) {
+  function generatePageLink(page: number) {
+    const searchParams = new URLSearchParams({
+      ...(q && { q }),
+      ...(status && { status: status }),
+      page: page.toString(),
+    });
+
+    return `/admin/accounts/?${searchParams.toString()}`;
+  }
+
+  return (
+    <div className="flex justify-between !mt-10">
+      <Link
+        href={generatePageLink(currentPage - 1)}
+        className={cn(
+          "flex items-center gap-2 font-semibold",
+          currentPage <= 1 && "invisible",
+        )}
+      >
+        <ArrowLeft size={16} />
+        Previous page
+      </Link>
+      <span className="font-semibold">
+        Page {currentPage} of {totalPages}
+      </span>
+      <Link
+        href={generatePageLink(currentPage + 1)}
+        className={cn(
+          "flex items-center gap-2 font-semibold",
+          currentPage >= totalPages && "invisible",
+        )}
+      >
+        Next page
+        <ArrowRight size={16} />
+      </Link>
+    </div>
+  );
+}

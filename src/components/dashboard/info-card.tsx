@@ -38,7 +38,7 @@ export async function InfoCard({ className, userId }: InfoCardProps) {
             {formatPrice(data?.wallet.balance ?? 0)}
           </div>
           <p className="text-xs text-muted-foreground">
-            Balance you can avaible to withdraw
+            Balance you can able to withdraw
           </p>
         </CardContent>
       </Card>
@@ -52,7 +52,7 @@ export async function InfoCard({ className, userId }: InfoCardProps) {
             {formatPrice(data?.withdrawal.amount ?? 0)}
           </div>
           <p className="text-xs text-muted-foreground">
-            This much amount you have withdrawn
+            The amount you have withdrawn
           </p>
         </CardContent>
       </Card>

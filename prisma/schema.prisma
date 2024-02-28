@@ -166,7 +166,10 @@ model Onboarding {
   createdAt             DateTime          @default(now())
   updatedAt             DateTime          @updatedAt
 
-  @@fulltext([name, phone])
+  @@fulltext([name, email, facebook_username])
+  @@fulltext([facebook_username])
+  @@fulltext([facebook_profile_link])
+  @@fulltext([email])
   @@map("onboardings")
 }
 

@@ -32,6 +32,7 @@ import { trpc } from "@/app/_trpc/client";
 import { RouterOutputs } from "@/server";
 import { useParams } from "next/navigation";
 import { AdminUsersListParams } from "@/types";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

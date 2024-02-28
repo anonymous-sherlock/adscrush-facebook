@@ -1,7 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -12,7 +11,6 @@ import {
   FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
 import { Card, CardContent } from "@/components/ui/card";
 import useFileUpload from "@/hooks/useFileUpload";
 import { addDetails, sendOnboardingEmailVerifyCode, validateOtp } from "@/lib/actions/onboarding";

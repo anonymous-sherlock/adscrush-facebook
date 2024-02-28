@@ -1,7 +1,8 @@
 "use client";
-
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
-import { Row } from "@tanstack/react-table";
+import { AlertDialog } from "@/components/ui/alert-dialog";
+import Spinner from "@/components/ui/spinner";
+import { PAYMENT_STATUS } from "@/constants/index";
+import { changePaymentStatus } from "@/lib/actions/payment";
 import { Button } from "@/ui/button";
 import {
   DropdownMenu,
@@ -14,13 +15,15 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger
 } from "@/ui/dropdown-menu";
-import { AlertDialog } from "@/components/ui/alert-dialog";
-import { toast } from "sonner";
 import { Payment_Status as paymentStatus } from "@prisma/client";
-import { PaymentListSchema } from "./schema";
-import { useState } from "react";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { Row } from "@tanstack/react-table";
 import { useSession } from "next-auth/react";
-import { PAYMENT_STATUS } from "@/constants/index";
+import React, { useState } from "react";
+import { toast } from "sonner";
+import { PaymentListSchema } from "./schema";
+import { useRouter } from "next/navigation";
+import { catchError } from "@/lib/utils";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -32,10 +35,31 @@ export function DataTableRowActions<TData>({
   const payment = PaymentListSchema.parse(row.original);
   const [paymentStatus, setPaymentStatus] = useState<paymentStatus>(payment.status);
   const { data: session, status } = useSession()
+  const [isPending, startTransition] = React.useTransition()
+  const router = useRouter()
+
 
 
   function handleStatusChange(status: paymentStatus) {
-    console.log(status)
+    startTransition(async () => {
+      try {
+        // const data = await changePaymentStatus({ id: payment.id, status });
+        // setPaymentStatus(data.status);
+        router.refresh();
+      } catch (error) {
+        catchError(error)
+      }
+    });
+  }
+
+
+  if (isPending) {
+    return (
+      <div className="flex items-center justify-center">
+        <Spinner />
+      </div>
+    )
+
   }
   return (
     <>
@@ -84,8 +108,6 @@ export function DataTableRowActions<TData>({
                   </DropdownMenuSubContent>
                 </DropdownMenuSub> : null
             }
-
-
           </DropdownMenuContent>
         </DropdownMenu>
       </AlertDialog>

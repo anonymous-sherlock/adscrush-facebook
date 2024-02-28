@@ -39,7 +39,8 @@ export function DataTableToolbar<TData>({
 
   return (
     <div className="flex items-center justify-between">
-      <div className="flex flex-1 items-center space-x-2">
+      <div className="flex md:flex-row flex-wrap flex-1 md:items-center justify-start  md:space-x-2
+      gap-2">
         <Input
           placeholder="Search payments..."
           value={table.getState().globalFilter}

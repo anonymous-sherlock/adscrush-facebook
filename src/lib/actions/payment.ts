@@ -1,5 +1,4 @@
 "use server";
-
 import { db } from "@/db";
 import {
   paymentMethodDetails,
@@ -8,6 +7,8 @@ import {
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getCurrentUser } from "../auth";
+import { Payment_Status } from "@prisma/client";
+import { resolve } from "path";
 
 interface checkPaymentMethodType {
   method: z.infer<typeof payoutFormSchema.shape.paymentMethod>;
@@ -142,4 +143,59 @@ export async function getUserPayoutDetails() {
     return null;
   }
   return payoutMethods;
+}
+
+
+
+interface changePaymentStatusType {
+  id: string;
+  status: Payment_Status
+}
+
+export async function changePaymentStatus({ id, status }: changePaymentStatusType) {
+  // const existingPayment = await db.payment.findFirst({
+  //   where: { id },
+  //   select: { id: true, status: true, amount: true, walletId: true },
+  // });
+
+  // if (!existingPayment) {
+  //   throw new Error("Payment not found");
+  // }
+  // if (existingPayment.status === "PAID" && status === "CANCELLED") {
+  //   await db.$transaction([
+  //     db.payment.update({
+  //       where: { id: existingPayment.id },
+  //       data: {
+  //         wallet: {
+  //           update: {
+  //             balance: { increment: existingPayment.amount }
+  //           }
+  //         },
+  //       },
+  //     })
+  //   ])
+  // }
+  // if (existingPayment.status === "CANCELLED" && status === "PAID") {
+  //   await db.$transaction([
+  //     db.payment.update({
+  //       where: { id: existingPayment.id },
+  //       data: {
+  //         wallet: {
+  //           update: {
+  //             balance: { decrement: existingPayment.amount }
+  //           }
+  //         },
+  //       },
+  //     })
+  //   ])
+  // }
+
+  // const [updatedPayment] = await db.$transaction([
+  //   db.payment.update({ where: { id: id }, data: { status: status } })
+  // ])
+
+  // return {
+  //   success: "Payment status changed successfully",
+  //   status: updatedPayment.status
+  // }
 }
