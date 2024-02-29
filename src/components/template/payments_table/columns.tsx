@@ -4,12 +4,13 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/ui/checkbox";
 import { CustomBadge } from "@/components/CustomBadge";
 import { PAYMENT_STATUS } from "@/constants/index";
-import { formatPrice } from "@/lib/utils";
+import { formatAccountNumber, formatPrice } from "@/lib/utils";
 import { RouterOutputs } from "@/server";
 import { Payment } from "@prisma/client";
 import { format } from "date-fns";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
+import { paymentMethodDetails } from "@/schema/payment.schema";
 export type PaymentsList = Pick<
   Payment,
   "id" | "txid" | "status" | "amount" | "createdAt" | "type"
@@ -84,17 +85,30 @@ export const columns: ColumnDef<PaymentsList>[] = [
       <DataTableColumnHeader column={column} title="Payout To" />
     ),
     cell: ({ row }) => {
-      return (
-        <div className="flex space-x-2 max-w-[220px] truncate">
-          <span className="w-full truncate font-medium ">
-            {
-              row.original?.userPayoutMethod?.details && (typeof row.original.userPayoutMethod.details === 'object') && ('upiId' in row.original.userPayoutMethod.details && typeof row.original.userPayoutMethod.details.upiId == "string") ? (
-                row.original.userPayoutMethod.details.upiId
-              ) : "Payment method Deleted."
-            }
-          </span>
-        </div>
-      );
+      const paymentMethod = paymentMethodDetails.safeParse(row.original.userPayoutMethod)
+      if (!paymentMethod.success) {
+        return "Payment method Deleted"
+      }
+      if ("upiId" in paymentMethod.data.details) {
+        return (
+          <div className="flex space-x-2 max-w-[220px] truncate">
+            <span className="w-full truncate font-medium ">
+              {paymentMethod.data.details.upiId}
+            </span>
+          </div>
+        )
+      } else {
+        return (
+          <div className="flex space-x-2 max-w-[220px] truncate">
+            <span className="w-full truncate font-medium ">
+              <div className="flex flex-col items-start">
+                <span>{paymentMethod.data.details.accountHolderName}</span>
+                <span className="text-default-500 text-tiny">{paymentMethod.data.details.bankName} - {formatAccountNumber(paymentMethod.data.details.accountNumber)}</span>
+              </div>
+            </span>
+          </div>
+        );
+      }
     },
     enableSorting: false,
   },

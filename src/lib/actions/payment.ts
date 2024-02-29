@@ -134,14 +134,11 @@ export async function getUserPayoutDetails() {
     select: {
       id: true,
       details: true,
+      primary: true,
     },
   });
 
-  const parsedData = z.array(paymentMethodDetails).safeParse(payoutMethods);
 
-  if (!parsedData.success) {
-    return null;
-  }
   return payoutMethods;
 }
 

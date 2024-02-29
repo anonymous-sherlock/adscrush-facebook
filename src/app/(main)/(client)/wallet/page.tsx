@@ -23,7 +23,6 @@ async function WalletPage({ searchParams }: WalletPageProps) {
   ])
 
 
-
   return (
     <>
       <div className='flex flex-col md:flex-row p-4 md:p-8 gap-4 items-stretch justify-stretch'>

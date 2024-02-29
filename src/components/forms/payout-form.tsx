@@ -62,10 +62,18 @@ export function PayoutForm({ className }: PayoutFormProps) {
     (async () => {
       await getUserPayoutDetails().then((data) => {
         if (!data || data.length === 0) setError("Payment method not added.")
-        if (data) setData(data)
+        else {
+          setData(data)
+          const primaryPaymentMethod = data.find((item) => item.primary);
+          if (primaryPaymentMethod) {
+            form.setValue('paymentMethod', primaryPaymentMethod.id);
+          } else {
+            setError("Primary payment method not found.");
+          }
+        }
       })
     })()
-  }, [])
+  }, [form])
 
 
   async function onSubmit(values: z.infer<typeof payoutFormSchema>) {
@@ -96,23 +104,23 @@ export function PayoutForm({ className }: PayoutFormProps) {
               Request a payout from wallet.
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex grow gap-6">
+          <CardContent className="flex flex-col md:flex-row gap-2 grow md:gap-6">
             <FormField
               control={form.control}
               name="paymentMethod"
               render={({ field }) => (
                 <FormItem className="grow w-full">
                   <FormLabel>Payment Method</FormLabel>
-                  <Select onValueChange={field.onChange}>
+                  <Select onValueChange={field.onChange} defaultValue={field.value} value={field.value}>
                     <FormControl>
                       <SelectTrigger disabled={data?.length === 0}>
-                        <SelectValue placeholder="Select a payment method" />
+                        <SelectValue placeholder="Select a payment method" defaultValue={field.value} />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent >
+                    <SelectContent defaultValue={field.value} >
                       {
                         data && data.map((paymentMethod) => (
-                          <SelectItem value={paymentMethod.id} key={paymentMethod.id}>
+                          <SelectItem value={paymentMethod.id.toString()} key={paymentMethod.id}>
                             {RenderPayoutMethod({ paymentMethod })}
                           </SelectItem>
                         ))
