@@ -11,6 +11,7 @@ import {
 import Image from 'next/image'
 import React, { PropsWithChildren } from 'react'
 import { Nav } from './nav'
+import { navConfig } from '@/config/site'
 
 interface AdminSidebarProps extends PropsWithChildren {
     defaultLayout: number[] | undefined
@@ -52,7 +53,7 @@ function AdminSidebar({
                     }}
 
 
-                    className={cn("bg-white", isCollapsed && "min-w-[50px] max-w-[50px] hidden md:block transition-all duration-300 ease-in-out")}
+                    className={cn("bg-white hidden md:block", isCollapsed && "min-w-[50px] max-w-[50px] hidden md:block transition-all duration-300 ease-in-out")}
                 >
                     <div className={cn("flex gap-2 h-[56px] items-center justify-center", isCollapsed ? 'h-[52px]' : 'px-2')}>
                         <Image src={logo.src} width={32} height={32} alt='Logo' className='rounded-sm' />
@@ -62,26 +63,17 @@ function AdminSidebar({
                     <Separator />
                     <Nav
                         isCollapsed={isCollapsed}
-                        links={[
-                            {
-                                title: "All Users",
-                                label: "",
-                                icon: Users2,
-                                variant: "ghost",
-                                href: "/admin/users"
-                            },
-                            {
-                                title: "All Accounts",
-                                label: "",
-                                icon: Inbox,
-                                variant: "ghost",
-                                href: "/admin/accounts"
-                            },
-                        ]}
+                        links={navConfig.adminSidebarNav[0].items.map((item) => ({
+                            title: item.title,
+                            label: item.label || "",
+                            icon: item.icon || "users2",
+                            variant: "ghost",
+                            href: item.href || "",
+                        }))}
                     />
 
                 </ResizablePanel>
-                <ResizableHandle withHandle onDoubleClick={(e) => {
+                <ResizableHandle className='hidden md:flex' withHandle onDoubleClick={(e) => {
                     // Fix: Update setIsCollapsed with a new value, for example, toggle the previous value
                     setIsCollapsed((prev) => !prev);
                 }}

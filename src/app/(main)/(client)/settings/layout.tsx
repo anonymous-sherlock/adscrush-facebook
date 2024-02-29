@@ -22,7 +22,7 @@ export default async function StoreLayout({
 
 
   return (
-    <Shell>
+    <Shell className="p-4 md:p-8 pt-6">
       <div className="flex flex-col gap-2 pr-1 xxs:flex-row">
         <PageHeader className="flex-1">
           <PageHeaderHeading size="sm">Account Settings</PageHeaderHeading>

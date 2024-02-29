@@ -1,6 +1,7 @@
 import { AvatarIcon, ImageIcon } from "@radix-ui/react-icons"
-import { User } from "lucide-react"
+import { Inbox, LayoutDashboard, Settings, User, Users2, icons } from "lucide-react"
 import facebookLogo from "@/public/icons/facebook-logo.svg"
+import { cn } from "@/lib/utils"
 
 type IconProps = React.HTMLAttributes<SVGElement>
 
@@ -286,4 +287,19 @@ export const Icons = {
   ),
   avatar: AvatarIcon,
   placeholder: ImageIcon,
+  users2: Users2,
+  inbox: Inbox,
+  dashboard: LayoutDashboard,
+  settings: Settings
 }
+
+interface IconComponentProps {
+  name: keyof typeof Icons
+  className?: string
+}
+export const IconComponent = ({ name, className }: IconComponentProps) => {
+  const LucideIcon = Icons[name];
+  return <LucideIcon className={cn("w-5 h-5", className)} />;
+};
+
+export type IconKey = keyof typeof Icons;

@@ -26,13 +26,13 @@ async function PayoutPage() {
     }
   })
   return (
-    <Shell className='min-h-80 flex gap-4 justify-between items-stretch !p-0'>
+    <Shell className='min-h-80 flex flex-col md:flex-row gap-4 justify-between items-stretch !p-0'>
       <div className='flex-1 h-auto'>
-        <Accordion type="single" className='space-y-2' defaultValue='UPI'>
+        <Accordion type="single" className='space-y-2' defaultValue={paymentMethods.find((payment) => payment.primary && payment.methodType === "UPI") ? "UPI" : "NETBANKING"}>
           <AccordionItem value="UPI" className='bg-white p-4 border'>
             <AccordionTrigger>UPI</AccordionTrigger>
             <AccordionContent className=''>
-              <div className='grid grid-cols-2 gap-3'>
+              <div className='flex flex-col md:grid grid-cols-2 gap-3'>
                 {paymentMethods.filter((pay) => pay.methodType === "UPI").map((payment) => {
                   return <PaymentMethodsCard paymentMethod={payment} key={payment.id} />
                 })}
@@ -43,7 +43,7 @@ async function PayoutPage() {
           <AccordionItem value="NETBANKING" className='bg-white p-4 border'>
             <AccordionTrigger>NETBANKING</AccordionTrigger>
             <AccordionContent>
-              <div className='grid grid-cols-2 gap-3'>
+              <div className='flex flex-col md:grid grid-cols-2 gap-3'>
                 {paymentMethods.filter((pay) => pay.methodType === "NETBANKING").map((payment) => {
                   return <PaymentMethodsCard paymentMethod={payment} key={payment.id} />
                 })}
@@ -52,9 +52,8 @@ async function PayoutPage() {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-
       </div>
-      <div className='w-1/3 bg-white border h-auto p-4 flex gap-4 flex-col items-center justify-center'>
+      <div className='w-full md:w-1/3 bg-white border h-auto p-4 flex gap-4 flex-col items-center justify-center'>
         <Image src={WalletImage.src} width={100} height={100} alt='wallet image' />
         <p className='text-sm text-center'>
           Add your details to the payment method which is convenient for you. Wire transfers are processed through a personal manager. Each method has its commision - that&apos;s life

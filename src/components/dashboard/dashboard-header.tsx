@@ -9,6 +9,7 @@ import { ONBOARDING_REDIRECT } from '@routes'
 import { redirect } from 'next/navigation'
 import AccountSwitcher from './account-switcher'
 import { MainNav } from './main-nav'
+import { MobileNav } from '../global/mobile-nav'
 
 async function DashboardHeader() {
   const user = await getCurrentUser()
@@ -22,6 +23,7 @@ async function DashboardHeader() {
   return (
     <div className="border-b bg-white">
       <div className="flex h-16 items-center px-4">
+        <MobileNav />
         {onboardingName ?
           <AccountSwitcher onboarding={onboardingName} /> : null
         }

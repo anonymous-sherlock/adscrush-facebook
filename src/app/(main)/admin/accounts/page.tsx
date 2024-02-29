@@ -21,7 +21,7 @@ const AccountsListPage: FC<AccountsPageProps> = ({ searchParams: { page, q, stat
     };
     return (
         <ScrollArea className="h-[calc(100vh_-_65px)]">
-            <Shell className="p-2 md:px-8">
+            <Shell className="p-4 md:px-8">
                 <PageHeader className="flex flex-col md:flex-row justify-between md:items-center">
                     <div>
                         <div className="flex space-x-4">

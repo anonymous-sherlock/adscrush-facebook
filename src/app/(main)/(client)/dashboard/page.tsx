@@ -45,7 +45,7 @@ async function DashboardPage() {
   return (
     <>
       {/* main dashboard */}
-      <div className="flex-1 space-y-4 p-8 pt-6">
+      <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
         <div className="flex items-center justify-between space-y-2">
           <PageHeader className="flex-1">
             <PageHeaderHeading size="sm">Dashboard</PageHeaderHeading>
@@ -59,7 +59,7 @@ async function DashboardPage() {
           </TabsList>
           <TabsContent value="overview" className="space-y-4">
             <InfoCard userId={user.id} />
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+            <div className=" flex flex-col md:grid gap-4 md:grid-cols-2 lg:grid-cols-7">
               <Card className="col-span-4">
                 <CardHeader>
                   <CardTitle>Overview</CardTitle>

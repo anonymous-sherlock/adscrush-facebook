@@ -26,12 +26,12 @@ async function WalletPage({ searchParams }: WalletPageProps) {
 
   return (
     <>
-      <div className='flex flex-col  md:flex-row p-4 md:p-8 gap-4 items-stretch justify-stretch'>
+      <div className='flex flex-col md:flex-row p-4 md:p-8 gap-4 items-stretch justify-stretch'>
         <InfoCard className='flex-1 lg:grid-cols-2' userId={user?.id ?? ""} />
         <PayoutForm className='shrink-0 w-full md:w-2/5 h-fit  mb-[-4px]' />
       </div>
 
-      <div className="space-y-6 p-8 pt-0">
+      <div className="space-y-6 p-4 md:p-8 pt-0">
         <div className="flex flex-col gap-4 xs:flex-row xs:items-center xs:justify-between">
         </div>
         <React.Suspense>

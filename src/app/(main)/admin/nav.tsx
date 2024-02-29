@@ -11,13 +11,14 @@ import {
   TooltipTrigger,
 } from "@/ui/tooltip"
 import { usePathname, useSelectedLayoutSegments } from "next/navigation"
+import { IconComponent, IconKey } from "@/components/Icons"
 
 interface NavProps {
   isCollapsed: boolean
   links: {
     title: string
     label?: string
-    icon: LucideIcon
+    icon: IconKey
     variant: "default" | "ghost" | "secondary"
     href: string
   }[]
@@ -48,7 +49,7 @@ export function Nav({ links, isCollapsed }: NavProps) {
                     pathname.startsWith(link.href) && "bg-secondary text-primary"
                   )}
                 >
-                  <link.icon className="h-4 w-4" />
+                  <IconComponent name={link.icon} className="h-4 w-4" />
                   <span className="sr-only">{link.title}</span>
                 </Link>
               </TooltipTrigger>
@@ -73,7 +74,7 @@ export function Nav({ links, isCollapsed }: NavProps) {
                 pathname.startsWith(link.href) && "bg-secondary text-primary"
               )}
             >
-              <link.icon className="mr-2 h-4 w-4" />
+              <IconComponent name={link.icon} className="mr-2 h-4 w-4" />
               {link.title}
               {link.label && (
                 <span
