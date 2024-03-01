@@ -3,7 +3,7 @@ import { db } from "@/db";
 import { startOfDay } from "date-fns";
 
 const isProduction = process.env.NODE_ENV === 'production';
-const BONUS_UPDATE_TIME = isProduction ? DEFAULT_BONUS_UPDATE_TIME : 1000 * 10
+const BONUS_UPDATE_TIME = isProduction ? DEFAULT_BONUS_UPDATE_TIME : DEFAULT_BONUS_UPDATE_TIME
 
 
 export async function updateWalletBalances() {
