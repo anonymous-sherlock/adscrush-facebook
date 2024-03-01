@@ -20,7 +20,6 @@ export function SSOCallback({ searchParams: { token } }: SSOCallbackPageProps) {
 
     const onSubmit = React.useCallback(() => {
         if (success || error) return;
-        console.log(token)
         if (!token) {
             setError("Missing token!");
             return;

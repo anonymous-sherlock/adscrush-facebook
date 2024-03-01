@@ -1,25 +1,28 @@
-import { server } from '@/app/_trpc/server'
 import { InfoCard } from '@/components/dashboard/info-card'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { PayoutForm } from '@/components/forms/payout-form'
-import { getCurrentUser } from '@/lib/auth'
-import { wrapServerCall } from '@/lib/utils'
-import { SearchParams } from '@/types'
-import React from 'react'
 import { columns } from '@/components/template/payments_table/columns'
 import { DataTable } from '@/components/template/payments_table/data-table'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { getCurrentUser } from '@/lib/auth'
+import { getDateFromParams } from '@/lib/helpers/date'
+import { payment } from '@/server/api/payment'
+import { PaymentSearchParams } from '@/types'
+import React from 'react'
 
 interface WalletPageProps {
-  searchParams: SearchParams
+  searchParams: PaymentSearchParams
 }
 
-async function WalletPage({ searchParams }: WalletPageProps) {
-
+async function WalletPage({ searchParams: { date } }: WalletPageProps) {
+  const today = new Date();
+  const { from, to } = getDateFromParams(date, today)
   const user = await getCurrentUser()
+  const paymentsCountPromise = payment.count()
+  const paymentsPromise = payment.getAll({ userId: user?.id, date: { from, to }, limit: undefined })
 
   const [payments, paymentsCount] = await Promise.all([
-    await wrapServerCall(() => server.payment.getAll({ limit: undefined })),
-    await wrapServerCall(() => server.payment.getTotalPaymentCount())
+    paymentsPromise,
+    paymentsCountPromise
   ])
 
 
@@ -30,7 +33,7 @@ async function WalletPage({ searchParams }: WalletPageProps) {
         <PayoutForm className='shrink-0 w-full md:w-2/5 h-fit  mb-[-4px]' />
       </div>
 
-      <div className="space-y-6 p-4 md:p-8 pt-0">
+      <div className="space-y-6 p-4 md:p-8 md:pt-0">
         <div className="flex flex-col gap-4 xs:flex-row xs:items-center xs:justify-between">
         </div>
         <React.Suspense>

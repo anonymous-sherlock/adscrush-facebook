@@ -48,13 +48,10 @@ export function ProfileSettingsForm({ userDetails }: ProfileSettingsForm) {
     setSuccess("");
     startTransition(async () => {
       try {
-        await new Promise((resolve) => setTimeout(resolve, 10000));
         await updateUserProfile(values).then((data) => {
-          if (data.error) setError(data.error);
-          if (data.success) {
-            setSuccess(data.success);
-            router.refresh();
-          }
+          if (data.error) return setError(data.error);
+          setSuccess(data.success);
+          router.refresh();
         });
       } catch (err) {
         catchError(err);
@@ -168,7 +165,11 @@ export function ProfileSettingsForm({ userDetails }: ProfileSettingsForm) {
         <FormError message={error} />
 
         <Button type="submit" variant="secondary" disabled={isFormUnchanged || isPending}>
-          {isPending && <Icons.spinner className=""/>}
+          {isPending && <Icons.spinner
+            className="mr-2 h-4 w-4 animate-spin"
+            aria-hidden="true"
+          />
+          }
           Update profile
         </Button>
       </form>

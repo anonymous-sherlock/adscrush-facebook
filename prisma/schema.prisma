@@ -107,13 +107,18 @@ model Wallet {
 model Bonus {
   id        String       @id @default(cuid())
   amount    Float
-  type      Payment_Type @default(Bonus)
+  type      Bonus_Type @default(Bonus)
   wallet    Wallet?      @relation(fields: [walletId], references: [id])
   walletId  String?
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 
   @@map("bonus")
+}
+
+enum Bonus_Type {
+  Bonus
+  Referral
 }
 
 model Payment {
@@ -138,8 +143,6 @@ model Payment {
 enum Payment_Type {
   Deposit
   Withdraw
-  Bonus
-  Referral
 }
 
 enum Payment_Status {

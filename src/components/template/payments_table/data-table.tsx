@@ -25,14 +25,12 @@ import {
   TableRow,
 } from "@/ui/table";
 
+import useDateRangeFromSearchParams from "@/hooks/useDateRangeFromUrl";
+import { AdminUsersListParams } from "@/types";
+import { useParams } from "next/navigation";
 import { PaymentsList } from "./columns";
 import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
-import { trpc } from "@/app/_trpc/client";
-import { RouterOutputs } from "@/server";
-import { useParams } from "next/navigation";
-import { AdminUsersListParams } from "@/types";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -52,18 +50,10 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
-  const { userId } = useParams<AdminUsersListParams>()
-
-  const { data: initialData } = trpc.payment.getAll.useQuery({ limit: undefined, userId }, {
-    initialData: data as RouterOutputs["payment"]["getAll"],
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: true
-  }) as { data: TData[] };
 
 
   const table = useReactTable({
-    data: initialData,
+    data: data,
     columns,
     state: {
       sorting,

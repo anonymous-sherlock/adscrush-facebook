@@ -3,19 +3,27 @@ import { columns } from '@/components/template/payments_table/columns'
 import { DataTable } from '@/components/template/payments_table/data-table'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { getUserById } from '@/lib/data/user'
-import { wrapServerCall } from '@/lib/utils'
-import { AdminUsersListParams } from '@/types'
+import { getDateFromParams } from '@/lib/helpers/date'
+import { isValidDateString, wrapServerCall } from '@/lib/utils'
+import { payment } from '@/server/api/payment'
+import { AdminUsersListParams, PaymentSearchParams } from '@/types'
 import React from 'react'
 
 interface UsersPaymentsPageProps {
   params: AdminUsersListParams
+  searchParams: PaymentSearchParams
 }
 
-async function UsersPaymentsPage({ params: { userId } }: UsersPaymentsPageProps) {
+async function UsersPaymentsPage({ params: { userId }, searchParams: { date } }: UsersPaymentsPageProps) {
+  const today = new Date();
+  const { from, to } = getDateFromParams(date, today)
   const user = await getUserById(userId)
+  const paymentsCountPromise = payment.count(user?.id)
+  const paymentsPromise = payment.getAll({ userId: user?.id, date: { from, to }, limit: undefined })
+
   const [payments, paymentsCount] = await Promise.all([
-    await wrapServerCall(() => server.payment.getAll({ limit: undefined, userId: user?.id })),
-    await wrapServerCall(() => server.payment.getTotalPaymentCount({ userId: user?.id }))
+    paymentsPromise,
+    paymentsCountPromise
   ])
 
 

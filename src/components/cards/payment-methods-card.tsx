@@ -1,18 +1,16 @@
 "use client"
-import Image from 'next/image'
-import React from 'react'
-
-import { deletePaymentMethod } from '@/lib/actions/payment'
-import { cn } from '@/lib/utils'
-import UPI_logo from "@/public/icons/upi-logo.png"
-import { paymentMethodDetails } from '@/schema/payment.schema'
-import { Payment_Method_Type, Prisma } from '@prisma/client'
-import { Trash } from 'lucide-react'
-import { toast } from 'sonner'
-import { Icons } from '../Icons'
-import { Badge } from '../ui/badge'
-import { Button } from '../ui/button'
-import { Card, CardContent } from '../ui/card'
+import { deletePaymentMethod } from '@/lib/actions/payment';
+import { cn, formatAccountNumber } from '@/lib/utils';
+import { paymentMethodDetails } from '@/schema/payment.schema';
+import { Avatar } from '@nextui-org/react';
+import { Payment_Method_Type, Prisma } from '@prisma/client';
+import { Trash } from 'lucide-react';
+import React from 'react';
+import { toast } from 'sonner';
+import { Icons } from '../Icons';
+import { Badge } from '../ui/badge';
+import { Button } from '../ui/button';
+import { Card, CardContent } from '../ui/card';
 
 type PaymentMethodsCardProps = {
   paymentMethod: {
@@ -44,8 +42,7 @@ export function PaymentMethodsCard({ paymentMethod }: PaymentMethodsCardProps) {
     <Card className='p-4 shadow-sm'>
       <CardContent className='p-0 flex justify-between items-center'>
         <div className='flex items-center gap-2'>
-          <Image src={UPI_logo.src} width={50} height={50} alt='payment logo' />
-          <p className='font-semibold max-w-44 truncate'>{RenderPaymentMethod({ paymentMethod })}</p>
+          <div className='font-semibold max-w-52 truncate'>{RenderPaymentMethod({ paymentMethod })}</div>
           {
             paymentMethod.primary ?
               <Badge
@@ -83,10 +80,34 @@ function RenderPaymentMethod({ paymentMethod }: RenderPaymentMethodProps) {
   const parsedPaymentMethod = paymentMethodDetails.safeParse(paymentMethod);
   if (!parsedPaymentMethod.success) return null
   if ("upiId" in parsedPaymentMethod.data.details) {
-    return parsedPaymentMethod.data.details.upiId
+    return (
+      <div className="flex items-center gap-2">
+        <Avatar
+          alt="Upi Id"
+          className="flex-shrink-0 w-7 h-7"
+          size="sm"
+          src={`https://avatar.vercel.sh/fjksdffasdhfkasdhfkjgsadfht.png`}
+        />
+        <div className="flex flex-col items-start">
+          <span>UPI ID</span>
+          <span className="text-default-500 text-tiny">{parsedPaymentMethod.data.details.upiId}</span>
+        </div>
+      </div>
+    )
   } else {
     return (
-      parsedPaymentMethod.data.details.accountHolderName  
+      <div className="flex items-center gap-2">
+        <Avatar
+          alt="Upi Id"
+          className="flex-shrink-0 w-7 h-7"
+          size="sm"
+          src={`https://avatar.vercel.sh/a1b23456789.png`}
+        />
+        <div className="flex flex-col items-start">
+          <span>{parsedPaymentMethod.data.details.accountHolderName}</span>
+          <span className="text-default-500 text-tiny">{parsedPaymentMethod.data.details.bankName} - {formatAccountNumber(parsedPaymentMethod.data.details.accountNumber)}</span>
+        </div>
+      </div>
     )
   }
 }

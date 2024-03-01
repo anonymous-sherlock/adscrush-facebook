@@ -87,7 +87,7 @@ export const columns: ColumnDef<PaymentsList>[] = [
     cell: ({ row }) => {
       const paymentMethod = paymentMethodDetails.safeParse(row.original.userPayoutMethod)
       if (!paymentMethod.success) {
-        return "Payment method Deleted"
+        return "Payment Method Deleted."
       }
       if ("upiId" in paymentMethod.data.details) {
         return (

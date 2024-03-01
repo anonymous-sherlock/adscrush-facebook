@@ -1,16 +1,17 @@
 "use client";
-import { Cross2Icon } from "@radix-ui/react-icons";
-import { Table } from "@tanstack/react-table";
-import { Button } from "@/ui/button";
-import { Input } from "@/ui/input";
-import { DataTableViewOptions } from "./data-table-view-options";
-import { RefreshCw } from "lucide-react";
+import { CalendarDateRangePicker } from "@/components/global/date-range-picker";
 import TooltipComponent from "@/components/tooltip-component";
 import { BONUS_TYPE } from "@/constants/index";
 import { cn } from "@/lib/utils";
+import { Button } from "@/ui/button";
+import { Input } from "@/ui/input";
+import { Cross2Icon } from "@radix-ui/react-icons";
+import { Table } from "@tanstack/react-table";
+import { RefreshCw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
+import { DataTableViewOptions } from "./data-table-view-options";
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;
@@ -33,14 +34,14 @@ export function DataTableToolbar<TData>({
   };
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex flex-col md:flex-row gap-2 md:items-center justify-between">
       <div className="flex md:flex-row flex-wrap flex-1 md:items-center justify-start  md:space-x-2
       gap-2">
         <Input
           placeholder="Search Bonus..."
           value={table.getState().globalFilter}
           onChange={e => table.setGlobalFilter(String(e.target.value))}
-          className="h-8 w-[150px] lg:w-[250px]"
+          className="h-8 grow md:grow-0 w-[150px] lg:w-[250px]"
         />
         <TooltipComponent message="Refetch Data" delayDuration={250}>
           <Button variant="outline" size="sm" className="h-8 w-8 p-2 border-dashed m-0" onClick={handleRefreshClick} >
@@ -66,6 +67,7 @@ export function DataTableToolbar<TData>({
           </Button>
         )}
       </div>
+      <CalendarDateRangePicker />
       <DataTableViewOptions table={table} />
     </div >
   );

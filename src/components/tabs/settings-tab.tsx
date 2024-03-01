@@ -1,12 +1,12 @@
 "use client"
 
+import { Tabs, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
 import Link from "next/link"
 import { useRouter, useSelectedLayoutSegment } from "next/navigation"
-import { Tabs, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
 
-import { cn } from "@/lib/utils"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
+import { cn } from "@/lib/utils"
 
 interface SettingsTabsProps {
 

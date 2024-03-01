@@ -1,4 +1,4 @@
-import { Onboarding_Status, Payment_Status } from "@prisma/client";
+import { Onboarding_Status, Payment_Status, Bonus_Type } from "@prisma/client";
 import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
 import { CircleIcon, Network, User } from "lucide-react";
 
@@ -16,10 +16,9 @@ export const DOCUMENT_OPTIONS: string[] = [
 
 export const maxUploadFileSize = 8 * 1024 * 1024; // Assuming max size is 8MB
 
-type BonusType = "Bonus" | "Referral";
 export type StatusType = {
   label: string;
-  value: Onboarding_Status | Payment_Status | BonusType
+  value: Onboarding_Status | Payment_Status | Bonus_Type
   icon?: React.ComponentType<{ className?: string }>;
   color?: {
     textColor: string;
@@ -115,7 +114,7 @@ export const PAYMENT_STATUS: PaymentStatusProps[] = [
 ];
 
 export type BonusTypeProps = StatusType & {
-  value: "Bonus" | "Referral";
+  value: Bonus_Type
 }
 export const BONUS_TYPE: BonusTypeProps[] = [
   {

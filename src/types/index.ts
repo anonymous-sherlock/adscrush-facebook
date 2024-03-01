@@ -25,7 +25,13 @@ export interface DataTableFilterableColumn<TData>
   options: Option[]
 }
 
-
 export interface AdminUsersListParams extends Params {
   userId: string
-}  
+}
+export interface BonusSearchParams extends SearchParams {
+  date?: string
+}
+export interface PaymentSearchParams extends SearchParams {
+  date?: string
+}
+

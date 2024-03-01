@@ -4,31 +4,24 @@ import {
     TabsList,
     TabsTrigger
 } from "@/components/ui/tabs"
-import { AdminUsersListParams } from "@/types"
 import Link from "next/link"
-import { useParams, useRouter, useSelectedLayoutSegment } from "next/navigation"
+import { useRouter, useSelectedLayoutSegment } from "next/navigation"
 import { ScrollArea } from "../ui/scroll-area"
 
-export function AccountsTabs() {
-    const { userId } = useParams<AdminUsersListParams>()
+export function DashboardTabs() {
     const router = useRouter()
     const segment = useSelectedLayoutSegment()
 
     const tabs = [
         {
-            title: "Profile",
-            href: `/admin/users/${userId}/accounts`,
+            title: "Overview",
+            href: `/dashboard`,
             isActive: segment === null,
         },
         {
-            title: "Password",
-            href: `/admin/users/${userId}/accounts/password`,
-            isActive: segment === "password",
-        },
-        {
-            title: "Integration",
-            href: `/admin/users/${userId}/accounts/integration`,
-            isActive: segment === "integration",
+            title: "Bonus History",
+            href: `/dashboard/bonus`,
+            isActive: segment === "bonus",
         },
     ]
 

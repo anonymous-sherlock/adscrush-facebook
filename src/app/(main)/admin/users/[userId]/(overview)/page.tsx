@@ -1,23 +1,31 @@
 "use server"
+import { CalendarDateRangePicker } from '@/components/global/date-range-picker'
 import { InfoCard } from '@/components/dashboard/info-card'
 import { columns } from '@/components/template/bonus_table/columns'
 import { DataTable } from '@/components/template/bonus_table/data-table'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { getUserById } from '@/lib/data/user'
 import { bonus } from '@/server/api/bonus'
-import { AdminUsersListParams } from '@/types'
+import { AdminUsersListParams, BonusSearchParams } from '@/types'
 import { notFound } from 'next/navigation'
 import React from 'react'
+import { getDateFromParams } from '@/lib/helpers/date'
 
 interface UserPageProps {
   params: AdminUsersListParams
+  searchParams: BonusSearchParams
 }
-async function UserPage({ params: { userId } }: UserPageProps) {
+async function UserPage({ params: { userId }, searchParams: { date } }: UserPageProps) {
+  const today = new Date();
+  const { from, to } = getDateFromParams(date, today)
+
   const user = await getUserById(userId)
   if (!user) return notFound()
-  const bonusCount = await bonus.count(user.id)
-  const bonuses = await bonus.getAll(user.id)
+  const [bonusCount, bonuses] = await Promise.all([
+    bonus.count(user.id),
+    bonus.getAll({ userId: user.id, date: { from, to } })
+  ])
+
   return (
     <>
       <div className="block w-full">
@@ -25,11 +33,13 @@ async function UserPage({ params: { userId } }: UserPageProps) {
       </div>
       <React.Suspense>
         <Card className="col-span-3 !mt-0">
-          <CardHeader>
-            <CardTitle>Bonus history</CardTitle>
-            <CardDescription>
-              {user.name} has {bonusCount ?? 0} Bonus History.
-            </CardDescription>
+          <CardHeader className="flex flex-col md:flex-row justify-between items-center">
+            <div>
+              <CardTitle>Bonus history</CardTitle>
+              <CardDescription>
+                {user.name} has {bonusCount ?? 0} Bonus History.
+              </CardDescription>
+            </div>
           </CardHeader>
           <CardContent>
             <DataTable data={bonuses ?? []} columns={columns} />
@@ -40,5 +50,4 @@ async function UserPage({ params: { userId } }: UserPageProps) {
 
   )
 }
-
 export default UserPage

@@ -2,12 +2,17 @@ import { db } from "@/db";
 import { netbankingFormSchema, payoutFormSchema, upiFormSchema } from "@/schema/payment.schema";
 import { privateProcedure, router } from "@/server/trpc";
 import { TRPCError } from "@trpc/server";
+import { endOfDay, startOfDay, subMonths } from "date-fns";
 import { z } from "zod";
 
 const paymentQuerySchema = z.object({
   limit: z.number().nullish().optional(),
-  userId: z.string().nullish().optional()
-}).optional();
+  userId: z.string().nullish().optional(),
+  date: z.object({
+    from: z.date().optional(),
+    to: z.date().optional()
+  })
+});
 const getTotalPaymentCountSchema = z.object({
   userId: z.string().nullish().optional()
 }).optional();
@@ -59,8 +64,22 @@ export const paymentRouter = router({
   getAll: privateProcedure.input(paymentQuerySchema).query(async ({ ctx, input }) => {
     const limit = input?.limit;
     let userId = input?.userId || ctx.userId
+    const date = input?.date
+    const today = new Date();
+    const lastOneMonth = startOfDay(subMonths(today, 1))
+
+    const startDay = date?.from ? startOfDay(date.from) : lastOneMonth
+    const endDay = date?.to ? endOfDay(date?.to) : endOfDay(startDay)
+
+
     const payments = await db.payment.findMany({
-      where: { userId: userId, },
+      where: {
+        userId: userId,
+        createdAt: {
+          gte: startDay,
+          lte: endDay
+        }
+      },
       orderBy: { createdAt: "desc", },
       include: { userPayoutMethod: true, },
       take: limit ? limit : undefined,
