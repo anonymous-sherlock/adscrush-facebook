@@ -180,6 +180,8 @@ enum Onboarding_Status {
   Verified
   Declined
   Hold
+  Paused
+  Banned
 }
 
 model Document {

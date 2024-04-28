@@ -1,6 +1,6 @@
 import { Onboarding_Status, Payment_Status, Bonus_Type } from "@prisma/client";
 import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
-import { CircleIcon, Network, User } from "lucide-react";
+import { CircleIcon, Network, PauseCircle, User, Ban } from "lucide-react";
 
 export const DOCUMENT_OPTIONS: string[] = [
   "Voter ID",
@@ -18,7 +18,7 @@ export const maxUploadFileSize = 8 * 1024 * 1024; // Assuming max size is 8MB
 
 export type StatusType = {
   label: string;
-  value: Onboarding_Status | Payment_Status | Bonus_Type
+  value: Onboarding_Status | Payment_Status | Bonus_Type;
   icon?: React.ComponentType<{ className?: string }>;
   color?: {
     textColor: string;
@@ -26,7 +26,6 @@ export type StatusType = {
     ringColor: string;
   };
 };
-
 
 export type OnboardingStatusProps = StatusType & {
   value: Onboarding_Status;
@@ -44,6 +43,16 @@ export const ONBOARDING_STATUS: OnboardingStatusProps[] = [
     },
   },
 
+  {
+    label: "Paused",
+    value: "Paused",
+    icon: PauseCircle,
+    color: {
+      textColor: "text-yellow-700",
+      bgColor: "!bg-yellow-50",
+      ringColor: "ring-yellow-600/20",
+    },
+  },
   {
     value: "Verified",
     label: "Verified",
@@ -64,11 +73,21 @@ export const ONBOARDING_STATUS: OnboardingStatusProps[] = [
       ringColor: "ring-red-600/20",
     },
   },
+  {
+    value: "Banned",
+    label: "Banned",
+    icon: Ban,
+    color: {
+      textColor: "text-red-700",
+      bgColor: "!bg-red-50",
+      ringColor: "ring-red-600/20",
+    },
+  },
 ];
 
 export type PaymentStatusProps = StatusType & {
   value: Payment_Status;
-}
+};
 export const PAYMENT_STATUS: PaymentStatusProps[] = [
   {
     label: "Pending",
@@ -114,8 +133,8 @@ export const PAYMENT_STATUS: PaymentStatusProps[] = [
 ];
 
 export type BonusTypeProps = StatusType & {
-  value: Bonus_Type
-}
+  value: Bonus_Type;
+};
 export const BONUS_TYPE: BonusTypeProps[] = [
   {
     value: "Bonus",

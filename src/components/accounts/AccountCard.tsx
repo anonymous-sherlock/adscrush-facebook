@@ -7,7 +7,6 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { CustomBadge } from "../CustomBadge";
-
 interface UserAccountCardProps {
   status: Onboarding_Status;
   id: string;
@@ -15,19 +14,23 @@ interface UserAccountCardProps {
   createdAt: Date;
   profileLink: string
   username: string
+  image: string
 }
 
 
-export const UserAccountCard = ({ createdAt, id, name, status, profileLink, username }: UserAccountCardProps) => {
+export const UserAccountCard = ({ createdAt, id, name, status, profileLink, username, image }: UserAccountCardProps) => {
   return (
     <Card shadow="none" className="hover:shadow-lg shadow transition">
       <CardHeader className="justify-between">
         <div className="flex gap-3">
-          <Avatar isBordered radius="full" size="md" src={""} fallback />
-          <div className="flex flex-col items-start justify-center">
-            <h4 className="text-small font-semibold leading-none text-default-600">{name}</h4>
-            <h5 className="text-small tracking-tight text-default-500">@{username}</h5>
-          </div>
+          <Avatar isBordered radius="full" size="md" src={image} fallback />
+          <Link href={`/admin/users/${id}`} >
+
+            <div className="flex flex-col items-start justify-center">
+              <h4 className="text-small font-semibold leading-none text-default-600">{name}</h4>
+              <h5 className="text-small tracking-tight text-default-500">@{username}</h5>
+            </div>
+          </Link>
         </div>
         <Button
           color="primary"

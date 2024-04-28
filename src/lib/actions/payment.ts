@@ -150,49 +150,40 @@ interface changePaymentStatusType {
 }
 
 export async function changePaymentStatus({ id, status }: changePaymentStatusType) {
-  // const existingPayment = await db.payment.findFirst({
-  //   where: { id },
-  //   select: { id: true, status: true, amount: true, walletId: true },
-  // });
+  const existingPayment = await db.payment.findFirst({
+    where: { id },
+    select: { id: true, status: true, amount: true, walletId: true },
+  });
+  if (!existingPayment) {
+    throw new Error("Payment not found");
+  }
+  if (existingPayment.status === status) {
+    return {
+      error: "Cannot Change to same payment status"
+    }
+  }
+  // Update wallet balance based on payment status change
+  const walletUpdatePromise = db.wallet.update({
+    where: { id: existingPayment.walletId },
+    data: {
+      balance: {
+        ...(status === "CANCELLED" || status === "FAILED"
+          ? { increment: existingPayment.amount }
+          : { decrement: existingPayment.amount }),
+      },
+    },
+  });
 
-  // if (!existingPayment) {
-  //   throw new Error("Payment not found");
-  // }
-  // if (existingPayment.status === "PAID" && status === "CANCELLED") {
-  //   await db.$transaction([
-  //     db.payment.update({
-  //       where: { id: existingPayment.id },
-  //       data: {
-  //         wallet: {
-  //           update: {
-  //             balance: { increment: existingPayment.amount }
-  //           }
-  //         },
-  //       },
-  //     })
-  //   ])
-  // }
-  // if (existingPayment.status === "CANCELLED" && status === "PAID") {
-  //   await db.$transaction([
-  //     db.payment.update({
-  //       where: { id: existingPayment.id },
-  //       data: {
-  //         wallet: {
-  //           update: {
-  //             balance: { decrement: existingPayment.amount }
-  //           }
-  //         },
-  //       },
-  //     })
-  //   ])
-  // }
+  // Update payment status
+  const paymentUpdatePromise = db.payment.update({
+    where: { id: existingPayment.id },
+    data: { status: status },
+  });
 
-  // const [updatedPayment] = await db.$transaction([
-  //   db.payment.update({ where: { id: id }, data: { status: status } })
-  // ])
+  const [walletUpdate, updatedPayment] = await db.$transaction([walletUpdatePromise, paymentUpdatePromise]);
 
-  // return {
-  //   success: "Payment status changed successfully",
-  //   status: updatedPayment.status
-  // }
+  return {
+    success: `Payment status changed successfully to ${updatedPayment.status}`,
+    status: status,
+  };
 }

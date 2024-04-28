@@ -49,6 +49,11 @@ export const AccountsListReults = async ({ filterValues, page: searchPage = 1 }:
     where,
     take: accountsPerPage,
     skip,
+    include: {
+      user: {
+        select: { id: true, image: true }
+      }
+    }
   })
   const countPromise = db.onboarding.count({ where });
   const [accounts, totalResults] = await Promise.all([accountsPromise, countPromise]);
@@ -60,6 +65,7 @@ export const AccountsListReults = async ({ filterValues, page: searchPage = 1 }:
           <UserAccountCard
             key={account.id}
             name={account.name}
+            image={account.user?.image ?? ""}
             id={account.id}
             status={account.status}
             createdAt={account.createdAt}

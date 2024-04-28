@@ -25,11 +25,6 @@ export function AccountsTabs() {
             href: `/admin/users/${userId}/accounts/password`,
             isActive: segment === "password",
         },
-        {
-            title: "Integration",
-            href: `/admin/users/${userId}/accounts/integration`,
-            isActive: segment === "integration",
-        },
     ]
 
     return (

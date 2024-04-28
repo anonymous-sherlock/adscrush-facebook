@@ -3,25 +3,14 @@
  * These routes do not require authentication
  * @type {string[]}
  */
-export const publicRoutes = ["/",
-  "/sso-callback",
-  "/api/wallet/bonus",
-  "/api/wallet/create",
-];
+export const publicRoutes = ["/", "/sso-callback", "/api/wallet/bonus", "/api/wallet/create"];
 
 /**
  * An array of routes that are used for authentication
  * These routes will redirect logged in users to /settings
  * @type {string[]}
  */
-export const authRoutes = [
-  "/sign-in",
-  "/sign-up",
-  "/auth/error",
-  "/sign-in/reset-password",
-  "/sign-in/reset-password/step-2",
-  "/api/trpc/user.add"
-];
+export const authRoutes = ["/sign-in", "/sign-up", "/auth/error", "/sign-in/reset-password", "/sign-in/reset-password/step-2", "/api/trpc/user.add"];
 
 export const authPages = {
   login: "/sign-in",
@@ -29,12 +18,11 @@ export const authPages = {
   resetPassWord: "/sign-in/reset-password",
 };
 
-
 /**
  * The default onboarding redirect path after logging in
  * @type {string}
  */
-export const ONBOARDING_REDIRECT = "/onboarding"
+export const ONBOARDING_REDIRECT = "/onboarding";
 /**
  * The prefix for API authentication routes
  * Routes that start with this prefix are used for API authentication purposes

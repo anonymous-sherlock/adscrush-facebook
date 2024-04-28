@@ -43,8 +43,9 @@ export function DataTableRowActions<TData>({
   function handleStatusChange(status: paymentStatus) {
     startTransition(async () => {
       try {
-        // const data = await changePaymentStatus({ id: payment.id, status });
-        // setPaymentStatus(data.status);
+        const data = await changePaymentStatus({ id: payment.id, status });
+        if (data.success) toast.success(data.success)
+        if (data.error) toast.error(data.error)
         router.refresh();
       } catch (error) {
         catchError(error)
